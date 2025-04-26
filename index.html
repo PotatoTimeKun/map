@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>非公式すしすきーマイクラサーバ マップ</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map { height: 100vh; }
+  </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  // マップを初期化
+  var map = L.map('map', {
+    crs: L.CRS.Simple,  // 独自画像用
+    minZoom: -1
+  });
+
+  // マップの画像（事前に用意したスクショ画像）
+  // 2枚のマップ画像を並べる
+    var image1 = L.imageOverlay('mapData/0_0.png', [[0, 0], [500, 500]]).addTo(map);
+    var image2 = L.imageOverlay('mapData/0_1.png', [[0, 500], [500, 500*2]]).addTo(map);
+    var image3 = L.imageOverlay('mapData/-1_0.png', [[-500, 0], [0, 500]]).addTo(map);
+    var image4 = L.imageOverlay('mapData/-1_1.png', [[-500, 500], [0, 500*2]]).addTo(map);
+    var image5 = L.imageOverlay('mapData/1_0.png', [[500, 0], [500*2, 500]]).addTo(map);
+    var image6 = L.imageOverlay('mapData/1_1.png', [[500, 500], [500*2, 500*2]]).addTo(map);
+    var image7 = L.imageOverlay('mapData/0_-1.png', [[0, -500], [500, 0]]).addTo(map);
+    var image8 = L.imageOverlay('mapData/-1_-2.png', [[-500, -500*2], [0, -500]]).addTo(map);
+    var image9 = L.imageOverlay('mapData/1_-2.png', [[500, -500*2], [500*2, -500]]).addTo(map);
+    var image10 = L.imageOverlay('mapData/1_-1.png', [[500, -500], [500*2, 0]]).addTo(map);
+    var image11 = L.imageOverlay('mapData/0_-2.png', [[0, -500*2], [500, -500]]).addTo(map);
+    var image8 = L.imageOverlay('mapData/-1_-1.png', [[-500, -500], [0, 0]]).addTo(map);
+
+    // マップの表示範囲
+    var bounds = [[-500, -500*2], [500,500*2]]; // 全体をカバーするサイズ
+    map.fitBounds(bounds);
+
+  // 地点マーカーを置く
+  var marker = L.marker([100, 500]).addTo(map)
+    .bindPopup('<h2>マセイモ島</h2><p>座標: 1220 72 900<br>居住者: 塩ポテト君</p><img style="width: 300px;" src="images/maseimo_island.png">');
+  var marker2 = L.marker([300, 780]).addTo(map)
+    .bindPopup('<h2>すしすきー大学</h2><p>座標: 1360 69 750<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/sushi_uni.png">');
+
+  // 線路を引く
+  var polyline = L.polyline([
+    [190, 470],
+    [190, 640],
+    [520, 640]
+  ], {color: '#ff8888'}).addTo(map);
+  polyline.bindTooltip('ポテト線', {
+    permanent: true,     // 常に表示する
+    direction: 'center', // 線の中心に表示
+    className: 'railway-label' // CSSでデザインもできるよ
+    }).openTooltip();
+  var polyline2 = L.polyline([
+    [200, 470],
+    [200, 150],
+    [250, 150]
+  ], {color: '#ff8888'}).addTo(map);
+  polyline2.bindTooltip('ポテト線', {
+    permanent: true,     // 常に表示する
+    direction: 'center', // 線の中心に表示
+    className: 'railway-label' // CSSでデザインもできるよ
+    }).openTooltip();
+
+    var polyline3 = L.polyline([
+    [100, 100],
+    [100, -550]
+  ], {color: '#ff0000'}).addTo(map);
+  polyline3.bindTooltip('コロッセオ線', {
+    permanent: true,     // 常に表示する
+    direction: 'center', // 線の中心に表示
+    className: 'railway-label' // CSSでデザインもできるよ
+    }).openTooltip();
+
+    var polyline4 = L.polyline([
+    [100, 150],
+    [650, 150],
+    [650, 30]
+  ], {color: '#ffffff'}).addTo(map);
+  polyline4.bindTooltip('メトロぺす線', {
+    permanent: true,     // 常に表示する
+    direction: 'center', // 線の中心に表示
+    className: 'railway-label' // CSSでデザインもできるよ
+    }).openTooltip();
+
+var point1 = [180, 470];
+
+// 始点にラベル
+L.tooltip({
+  permanent: true,
+  direction: 'right', // 右側に表示
+  className: 'station-label',
+  offset: [10, 0]
+})
+.setContent('マセイモ駅')
+.setLatLng(point1)
+.addTo(map);
+
+
+</script>
+
+</body>
+</html>
