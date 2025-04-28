@@ -140,6 +140,8 @@
       .bindPopup('<h2>しなり城</h2><p>座標: 611 68 604<br>制作者: しなり</p><img style="width: 300px;" src="images/shinari_castle.png">');
     var marker27 = L.marker([1750, 100]).addTo(map)
       .bindPopup('<h2>北島・コマンドアイランド</h2><p>座標: 996 82 38</p><img style="width: 300px;" src="images/kita_island.png">');
+    var marker27 = L.marker([170, 240]).addTo(map)
+      .bindPopup('<h2>アパート ポテトライフ</h2><p>座標: 1084 72 847<br>制作者: 塩ポテト君<br>居住者: 塩ポテト君</p><img style="width: 300px;" src="images/potatolife.png">');
 
 
     // 線路用のレイヤーグループを作る
@@ -231,6 +233,16 @@
       className: 'railway-label' // CSSでデザインもできるよ
     }).openTooltip();
 
+    var polyline8 = L.polyline([
+      [530, 845],
+      [872, 845] 
+    ], { color: '#0000ff', className: "railway-line" }).addTo(railwayLayer);
+    polyline8.bindTooltip('整地師線', {
+      permanent: true,     // 常に表示する
+      direction: 'center', // 線の中心に表示
+      className: 'railway-label' // CSSでデザインもできるよ
+    }).openTooltip();
+
     var point1 = [170, 473];
     var myIcon1 = L.divIcon({ className: 'icon1', iconAnchor: [13, 13] });
     L.marker(point1, { icon: myIcon1 }).addTo(railwayLayer)
@@ -243,6 +255,8 @@
       .setContent('マセイモ駅')
       .setLatLng(point1)
       .addTo(railwayLayer);
+      
+      
 
     var point2 = [80, -550];
     var myIcon2 = L.divIcon({ className: 'icon2', iconAnchor: [13, 13] });
@@ -316,8 +330,20 @@
       className: 'station-label',
       offset: [10, 0]
     })
-      .setContent('デンチョス-ポテト線切り替え')
+      .setContent('切り替え')
       .setLatLng(point5_2)
+      .addTo(railwayLayer);
+
+      var point5_4 = [530, 845];
+    L.marker(point5_4, { icon: myIcon5 }).addTo(railwayLayer)
+    L.tooltip({
+      permanent: true,
+      direction: 'right', // 右側に表示
+      className: 'station-label',
+      offset: [10, 0]
+    })
+      .setContent('切り替え')
+      .setLatLng(point5_4)
       .addTo(railwayLayer);
 
     var point5_3 = [370, 1141];
@@ -330,6 +356,19 @@
     })
       .setContent('デンチョス城駅')
       .setLatLng(point5_3)
+      .addTo(railwayLayer);
+
+      var point6 = [872, 845] ;
+      var myIcon6 = L.divIcon({ className: 'icon6', iconAnchor: [13, 13] });
+      L.marker(point6, { icon: myIcon6 }).addTo(railwayLayer)
+    L.tooltip({
+      permanent: true,
+      direction: 'right', // 右側に表示
+      className: 'station-label',
+      offset: [10, 0]
+    })
+      .setContent('仮設整地師ビル前駅')
+      .setLatLng(point6)
       .addTo(railwayLayer);
 
     railwayLayer.addTo(map)
@@ -384,6 +423,15 @@
       border: 3px solid #fdfdfd;
       box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
       background-color: rgb(255, 255, 0);
+    }
+
+    .icon6 {
+      width: 20px !important;
+      height: 20px !important;
+      border-radius: 10px;
+      border: 3px solid #fdfdfd;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+      background-color: rgb(0, 0, 255);
     }
   </style>
 
