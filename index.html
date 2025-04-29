@@ -80,7 +80,7 @@
     map.fitBounds(bounds);
 
     // 地点マーカーを置く
-    var marker = L.marker([100, 500]).addTo(map)
+    var marker = L.marker([90, 490]).addTo(map)
       .bindPopup('<h2>マセイモ島</h2><p>座標: 1220 72 900<br>居住者: 塩ポテト君</p><img style="width: 300px;" src="images/maseimo_island.png">');
     var marker2 = L.marker([300, 780]).addTo(map)
       .bindPopup('<h2>すしすきー大学</h2><p>座標: 1360 70 750<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/sushi_uni.png">');
@@ -136,13 +136,42 @@
       .bindPopup('<h2>タマナシ城塞</h2><p>座標: 689 67 552<br>制作者: タマナシ</p><img style="width: 300px;" src="images/tama_house.png">');
     var marker28 = L.marker([775, -510]).addTo(map)
       .bindPopup('<h2>タマナシ港</h2><p>座標: 689 67 552<br>制作者: タマナシ</p>');
-    var marker27 = L.marker([640, -770]).addTo(map)
+    var marker29 = L.marker([640, -770]).addTo(map)
       .bindPopup('<h2>しなり城</h2><p>座標: 611 68 604<br>制作者: しなり</p><img style="width: 300px;" src="images/shinari_castle.png">');
-    var marker27 = L.marker([1750, 100]).addTo(map)
+    var marker30 = L.marker([1750, 100]).addTo(map)
       .bindPopup('<h2>北島・コマンドアイランド</h2><p>座標: 996 82 38</p><img style="width: 300px;" src="images/kita_island.png">');
-    var marker27 = L.marker([170, 240]).addTo(map)
+    var marker31 = L.marker([170, 240]).addTo(map)
       .bindPopup('<h2>アパート ポテトライフ</h2><p>座標: 1084 72 847<br>制作者: 塩ポテト君<br>居住者: 塩ポテト君</p><img style="width: 300px;" src="images/potatolife.png">');
-
+    var marker32 = L.marker([310, 410]).addTo(map)
+      .bindPopup('<h2>イモ クルーズ</h2><p>座標: 1175 65 788<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/imoship.png">');
+    var marker33 = L.marker([200, 330]).addTo(map)
+      .bindPopup('<h2>レストラン Nyap</h2><p>座標: 1120 72 848<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/nyap.png">');
+    var marker34 = L.marker([-70, 420]).addTo(map)
+      .bindPopup('<h2>豆腐建築</h2><p>座標: 1179 65 969<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/tofu.png">');
+    var marker35 = L.marker([310, 510]).addTo(map)
+      .bindPopup('<h2>マセイモ港</h2><p>座標: 1220 64 801<br>制作者: 塩ポテト君</p>');
+    var marker36 = L.marker([110, 510]).addTo(map)
+      .bindPopup('<h2>ハートの桜と空中じゃがいも畑</h2><p>座標: 1220 72 873<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/imosakura.png">');
+    var marker37 = L.marker([220, 510]).addTo(map)
+      .bindPopup('<h2>マセイモ像</h2><p>座標: 1233 72 818<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/imo_statue.png">');
+    var marker38 = L.marker([8, 475]).addTo(map)
+      .bindPopup('<h2>罪を償うナス像</h2><p>制作者: 塩ポテト君</p>');
+    var marker39 = L.marker([100, 430]).addTo(map)
+      .bindPopup('<h2>吊るされるナス像</h2><p>制作者: 塩ポテト君</p>');
+    var marker40 = L.marker([140, 445]).addTo(map)
+      .bindPopup('<h2>マセイモ交番</h2><p>制作者: 塩ポテト君</p>');
+    var marker41 = L.marker([-40, 540]).addTo(map)
+      .bindPopup('<h2>マセイモ弓道場</h2><p>座標: 1236 72 938<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/imo_kyudo.png">');
+    var marker42 = L.marker([10, 400]).addTo(map)
+      .bindPopup('<h2>全自動パンプキンパイ工場</h2><p>座標: 1161 72 940<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/kabocha.png">');
+    var marker43 = L.marker([120, 580]).addTo(map)
+      .bindPopup('<h2>ジェットコースター乗り場</h2><p>制作者: 塩ポテト君</p>');
+    var marker44 = L.marker([250, 565]).addTo(map)
+      .bindPopup('<h2>日付カウントアップ回路</h2><p>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/count.png">');
+    var marker45 = L.marker([260, 550]).addTo(map)
+      .bindPopup('<h2>日付カウントアップ回路見学路</h2><p>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/count2.png">');
+    var marker46 = L.marker([260, 490]).addTo(map)
+      .bindPopup('<h2>マセイモ島案内図</h2><p>制作者: 塩ポテト君</p>');
 
     // 線路用のレイヤーグループを作る
     var railwayLayer = L.layerGroup([]);
@@ -235,7 +264,7 @@
 
     var polyline8 = L.polyline([
       [530, 845],
-      [872, 845] 
+      [872, 845]
     ], { color: '#0000ff', className: "railway-line" }).addTo(railwayLayer);
     polyline8.bindTooltip('整地師線', {
       permanent: true,     // 常に表示する
@@ -255,8 +284,8 @@
       .setContent('マセイモ駅')
       .setLatLng(point1)
       .addTo(railwayLayer);
-      
-      
+
+
 
     var point2 = [80, -550];
     var myIcon2 = L.divIcon({ className: 'icon2', iconAnchor: [13, 13] });
@@ -334,7 +363,7 @@
       .setLatLng(point5_2)
       .addTo(railwayLayer);
 
-      var point5_4 = [530, 845];
+    var point5_4 = [530, 845];
     L.marker(point5_4, { icon: myIcon5 }).addTo(railwayLayer)
     L.tooltip({
       permanent: true,
@@ -358,9 +387,9 @@
       .setLatLng(point5_3)
       .addTo(railwayLayer);
 
-      var point6 = [872, 845] ;
-      var myIcon6 = L.divIcon({ className: 'icon6', iconAnchor: [13, 13] });
-      L.marker(point6, { icon: myIcon6 }).addTo(railwayLayer)
+    var point6 = [872, 845];
+    var myIcon6 = L.divIcon({ className: 'icon6', iconAnchor: [13, 13] });
+    L.marker(point6, { icon: myIcon6 }).addTo(railwayLayer)
     L.tooltip({
       permanent: true,
       direction: 'right', // 右側に表示
