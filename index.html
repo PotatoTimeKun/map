@@ -54,26 +54,28 @@
       minZoom: -1
     });
 
+
+    var mapVersion = "?ver=1"
     // マップの画像（事前に用意したスクショ画像）
     // 2枚のマップ画像を並べる
-    var image1 = L.imageOverlay('mapData/0_0.png', [[0, 0], [500, 500]]).addTo(map);
-    var image2 = L.imageOverlay('mapData/0_1.png', [[0, 500], [500, 500 * 2]]).addTo(map);
-    var image3 = L.imageOverlay('mapData/-1_0.png', [[-500, 0], [0, 500]]).addTo(map);
-    var image4 = L.imageOverlay('mapData/-1_1.png', [[-500, 500], [0, 500 * 2]]).addTo(map);
-    var image5 = L.imageOverlay('mapData/1_0.png', [[500, 0], [500 * 2, 500]]).addTo(map);
-    var image6 = L.imageOverlay('mapData/1_1.png', [[500, 500], [500 * 2, 500 * 2]]).addTo(map);
-    var image7 = L.imageOverlay('mapData/0_-1.png', [[0, -500], [500, 0]]).addTo(map);
-    var image8 = L.imageOverlay('mapData/-1_-2.png', [[-500, -500 * 2], [0, -500]]).addTo(map);
-    var image9 = L.imageOverlay('mapData/1_-2.png', [[500, -500 * 2], [500 * 2, -500]]).addTo(map);
-    var image10 = L.imageOverlay('mapData/1_-1.png', [[500, -500], [500 * 2, 0]]).addTo(map);
-    var image11 = L.imageOverlay('mapData/0_-2.png', [[0, -500 * 2], [500, -500]]).addTo(map);
-    var image12 = L.imageOverlay('mapData/-1_-1.png', [[-500, -500], [0, 0]]).addTo(map);
-    var image13 = L.imageOverlay('mapData/-1_2.png', [[-500, 500 * 2], [0, 500 * 3]]).addTo(map);
-    var image14 = L.imageOverlay('mapData/0_2.png', [[0, 500 * 2], [500, 500 * 3]]).addTo(map);
-    var image15 = L.imageOverlay('mapData/1_2.png', [[500, 500 * 2], [500 * 2, 500 * 3]]).addTo(map);
-    var image16 = L.imageOverlay('mapData/2_0.png', [[500 * 2, 0], [500 * 3, 500]]).addTo(map);
-    var image17 = L.imageOverlay('mapData/3_0.png', [[500 * 3, 0], [500 * 4, 500]]).addTo(map);
-    var image18 = L.imageOverlay('mapData/3_-1.png', [[500 * 3, -500], [500 * 4, 0]]).addTo(map);
+    var image1 = L.imageOverlay('mapData/0_0.png'+mapVersion, [[0, 0], [500, 500]]).addTo(map);
+    var image2 = L.imageOverlay('mapData/0_1.png'+mapVersion, [[0, 500], [500, 500 * 2]]).addTo(map);
+    var image3 = L.imageOverlay('mapData/-1_0.png'+mapVersion, [[-500, 0], [0, 500]]).addTo(map);
+    var image4 = L.imageOverlay('mapData/-1_1.png'+mapVersion, [[-500, 500], [0, 500 * 2]]).addTo(map);
+    var image5 = L.imageOverlay('mapData/1_0.png'+mapVersion, [[500, 0], [500 * 2, 500]]).addTo(map);
+    var image6 = L.imageOverlay('mapData/1_1.png'+mapVersion, [[500, 500], [500 * 2, 500 * 2]]).addTo(map);
+    var image7 = L.imageOverlay('mapData/0_-1.png'+mapVersion, [[0, -500], [500, 0]]).addTo(map);
+    var image8 = L.imageOverlay('mapData/-1_-2.png'+mapVersion, [[-500, -500 * 2], [0, -500]]).addTo(map);
+    var image9 = L.imageOverlay('mapData/1_-2.png'+mapVersion, [[500, -500 * 2], [500 * 2, -500]]).addTo(map);
+    var image10 = L.imageOverlay('mapData/1_-1.png'+mapVersion, [[500, -500], [500 * 2, 0]]).addTo(map);
+    var image11 = L.imageOverlay('mapData/0_-2.png'+mapVersion, [[0, -500 * 2], [500, -500]]).addTo(map);
+    var image12 = L.imageOverlay('mapData/-1_-1.png'+mapVersion, [[-500, -500], [0, 0]]).addTo(map);
+    var image13 = L.imageOverlay('mapData/-1_2.png'+mapVersion, [[-500, 500 * 2], [0, 500 * 3]]).addTo(map);
+    var image14 = L.imageOverlay('mapData/0_2.png'+mapVersion, [[0, 500 * 2], [500, 500 * 3]]).addTo(map);
+    var image15 = L.imageOverlay('mapData/1_2.png'+mapVersion, [[500, 500 * 2], [500 * 2, 500 * 3]]).addTo(map);
+    var image16 = L.imageOverlay('mapData/2_0.png'+mapVersion, [[500 * 2, 0], [500 * 3, 500]]).addTo(map);
+    var image17 = L.imageOverlay('mapData/3_0.png'+mapVersion, [[500 * 3, 0], [500 * 4, 500]]).addTo(map);
+    var image18 = L.imageOverlay('mapData/3_-1.png'+mapVersion, [[500 * 3, -500], [500 * 4, 0]]).addTo(map);
 
     // マップの表示範囲
     var bounds = [[-500, -500 * 2], [500 * 4, 500 * 3]]; // 全体をカバーするサイズ
@@ -81,7 +83,7 @@
 
     // 地点マーカーを置く
     var marker = L.marker([90, 490]).addTo(map)
-      .bindPopup('<h2>マセイモ島</h2><p>座標: 1220 72 900<br>居住者: 塩ポテト君</p><img style="width: 300px;" src="images/maseimo_island.png">');
+      .bindPopup('<h2>マセイモ島</h2><p>座標: 1220 72 900<br>居住者: 塩ポテト君</p><img style="width: 300px;" src="images/maseimo_island.png?ver=1">');
     var marker2 = L.marker([300, 780]).addTo(map)
       .bindPopup('<h2>すしすきー大学</h2><p>座標: 1360 70 750<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/sushi_uni.png">');
     var marker3 = L.marker([250, 1140]).addTo(map)
@@ -172,6 +174,12 @@
       .bindPopup('<h2>日付カウントアップ回路見学路</h2><p>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/count2.png">');
     var marker46 = L.marker([260, 490]).addTo(map)
       .bindPopup('<h2>マセイモ島案内図</h2><p>制作者: 塩ポテト君</p>');
+    var marker47 = L.marker([80, 300]).addTo(map)
+      .bindPopup('<h2>ポテト港-イモガンダム前</h2><p>座標: 1108 65 908<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/imoshipsakura.png">');
+    var marker48 = L.marker([140, 320]).addTo(map)
+      .bindPopup('<h2>イモガンダム</h2><p>座標: 1123 65 892<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/imogandam.png">');
+    var marker49 = L.marker([230, 270]).addTo(map)
+      .bindPopup('<h2>ナス公園（笑）</h2><p>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/nasupark.png">');
 
     // 線路用のレイヤーグループを作る
     var railwayLayer = L.layerGroup([]);
