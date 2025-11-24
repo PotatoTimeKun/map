@@ -72,7 +72,7 @@
     var image12 = L.imageOverlay('mapData/-1_-1.png?ver=1.1'+mapVersion, [[-500, -500], [0, 0]]).addTo(map);
     var image13 = L.imageOverlay('mapData/-1_2.png?ver=1.1'+mapVersion, [[-500, 500 * 2], [0, 500 * 3]]).addTo(map);
     var image14 = L.imageOverlay('mapData/0_2.png?ver=1.1'+mapVersion, [[0, 500 * 2], [500, 500 * 3]]).addTo(map);
-    var image15 = L.imageOverlay('mapData/1_2.png?ver=1.1'+mapVersion, [[500, 500 * 2], [500 * 2, 500 * 3]]).addTo(map);
+    var image15 = L.imageOverlay('mapData/1_2.png?ver=1.2'+mapVersion, [[500, 500 * 2], [500 * 2, 500 * 3]]).addTo(map);
     var image16 = L.imageOverlay('mapData/2_0.png?ver=1.1'+mapVersion, [[500 * 2, 0], [500 * 3, 500]]).addTo(map);
     var image17 = L.imageOverlay('mapData/2_1.png?ver=1.1'+mapVersion, [[500 * 2, 500], [500 * 3, 500 * 2]]).addTo(map);
     var image18 = L.imageOverlay('mapData/3_0.png?ver=1.1'+mapVersion, [[500 * 3, 0], [500 * 4, 500]]).addTo(map);
@@ -205,6 +205,8 @@
     .bindPopup('<h2>月玉農場</h2><p>座標: -681 63 645<br>制作者: 月玉</p><img style="width: 300px;" src="images/tsukitama_house.jpeg">');
     var marker58   = L.marker([400, 300]).addTo(map)
     .bindPopup('<h2>マセイモ航空 MASE-300YEN</h2><p>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/imo_airplane.jpeg">');
+    var marker59   = L.marker([520, 1210]).addTo(map)
+    .bindPopup('<h2>あかみハウス</h2><p>座標: 1569 70 701<br>制作者: あかみ</p><img style="width: 300px;" src="images/akami_house.jpeg">');
     
     // 線路用のレイヤーグループを作る
     var railwayLayer = L.layerGroup([]);
