@@ -74,8 +74,15 @@
     var image14 = L.imageOverlay('mapData/0_2.png'+mapVersion, [[0, 500 * 2], [500, 500 * 3]]).addTo(map);
     var image15 = L.imageOverlay('mapData/1_2.png'+mapVersion, [[500, 500 * 2], [500 * 2, 500 * 3]]).addTo(map);
     var image16 = L.imageOverlay('mapData/2_0.png'+mapVersion, [[500 * 2, 0], [500 * 3, 500]]).addTo(map);
-    var image17 = L.imageOverlay('mapData/3_0.png'+mapVersion, [[500 * 3, 0], [500 * 4, 500]]).addTo(map);
-    var image18 = L.imageOverlay('mapData/3_-1.png'+mapVersion, [[500 * 3, -500], [500 * 4, 0]]).addTo(map);
+    var image17 = L.imageOverlay('mapData/2_1.png'+mapVersion, [[500 * 2, 500], [500 * 3, 500 * 2]]).addTo(map);
+    var image18 = L.imageOverlay('mapData/3_0.png'+mapVersion, [[500 * 3, 0], [500 * 4, 500]]).addTo(map);
+    var image19 = L.imageOverlay('mapData/3_-1.png'+mapVersion, [[500 * 3, -500], [500 * 4, 0]]).addTo(map);
+    var image20 = L.imageOverlay('mapData/1_-3.png'+mapVersion, [[500, -500 * 3], [500 * 2, -500*2]]).addTo(map);
+    var image21 = L.imageOverlay('mapData/1_-4.png'+mapVersion, [[500, -500 * 4], [500 * 2, -500*3]]).addTo(map);
+    var image22 = L.imageOverlay('mapData/1_-5.png'+mapVersion, [[500, -500 * 5], [500 * 2, -500*4]]).addTo(map);
+    var image23 = L.imageOverlay('mapData/1_-6.png'+mapVersion, [[500, -500 * 6], [500 * 2, -500*5]]).addTo(map);
+    var image24 = L.imageOverlay('mapData/2_-6.png'+mapVersion, [[500 * 2, -500 * 6], [500 * 3, -500*5]]).addTo(map);
+    var image25 = L.imageOverlay('mapData/1_-7.png'+mapVersion, [[500, -500 * 7], [500 * 2, -500*6]]).addTo(map);
 
     // マップの表示範囲
     var bounds = [[-500, -500 * 2], [500 * 4, 500 * 3]]; // 全体をカバーするサイズ
@@ -89,7 +96,7 @@
     var marker3 = L.marker([250, 1140]).addTo(map)
       .bindPopup('<h2>デンチョス城</h2><p>座標: 1545 65 775<br>制作者: 光奏</p><img style="width: 300px;" src="images/chos_castle.png">');
     var marker4 = L.marker([-100, 1140]).addTo(map)
-      .bindPopup('<h2>建設中</h2><p>座標: 1550 231 950<br>制作者: 光奏</p>');
+      .bindPopup('<h2>建設中？</h2><p>座標: 1550 231 950<br>制作者: 光奏</p><img style="width: 300px;" src="images/denchos_kuchu.jpeg">');
     var marker5 = L.marker([-300, 790]).addTo(map)
       .bindPopup('<h2>BIG KUCHIBASHI</h2><p>座標: 1370 62 1114<br>制作者: 光奏</p><img style="width: 300px;" src="images/water_kuchibashi.png">');
     var marker6 = L.marker([730, 650]).addTo(map)
@@ -180,6 +187,22 @@
       .bindPopup('<h2>イモガンダム</h2><p>座標: 1123 65 892<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/imogandam.png">');
     var marker49 = L.marker([230, 270]).addTo(map)
       .bindPopup('<h2>ナス公園（笑）</h2><p>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/nasupark.png">');
+    var marker50 = L.marker([60, 110]).addTo(map)
+      .bindPopup('<h2>とじのすけ像</h2><p>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/tojinosuke.jpeg">');
+    var marker51 = L.marker([90, 200]).addTo(map)
+      .bindPopup('<h2>溶岩にゃぷ</h2><p>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/lavanyap.jpeg">');
+    var marker52 = L.marker([-400, 200]).addTo(map)
+      .bindPopup('<h2>ナスランド</h2><p>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/nasuland.jpeg">');
+    var marker53 = L.marker([250, 1350]).addTo(map)
+      .bindPopup('<h2>武装要塞国家アウターヘブン</h2><p>座標: 1633 63 766<br>制作者: ドグワン</p><img style="width: 300px;" src="images/dogwan_village.jpeg">');
+    var marker54 = L.marker([1050, 810]).addTo(map)
+      .bindPopup('<h2>金うんち神社</h2><p>座標: 1363 70 420<br>制作者: しなり？</p><img style="width: 300px;" src="images/gold_unchi.jpeg">');
+    var marker55 = L.marker([1200, 390]).addTo(map)
+      .bindPopup('<h2>海上都市 芋ータル(建設中)</h2><p>座標: 1161 65 346<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/imo_taru.jpeg">');
+    var marker56 = L.marker([1000, -2800]).addTo(map)
+      .bindPopup('<h2>タマナシのやらかし見学ロード</h2><p>座標: -479 72 427<br>やらかし者: タマナシ</p><img style="width: 300px;" src="images/tamanashi_tnt.jpeg">');
+    var marker57  = L.marker([600, -3200]).addTo(map)
+    .bindPopup('<h2>月玉の家</h2><p>座標: -681 63 645<br>制作者: 月玉</p><img style="width: 300px;" src="images/tsukitama_house.jpeg">');
 
     // 線路用のレイヤーグループを作る
     var railwayLayer = L.layerGroup([]);
@@ -200,9 +223,11 @@
     var polyline2 = L.polyline([
       [170, 473],
       [200, 473],
-      [200, 155],
-      [260, 155],
-      [260, 150]
+      [200, 175],
+      [50, 175],
+      [50, 148],
+      [-300, 148],
+      [-300, 190]
     ], { color: '#ff8888', className: "railway-line" }).addTo(railwayLayer);
     polyline2.bindTooltip('ポテト線', {
       permanent: true,     // 常に表示する
@@ -261,10 +286,12 @@
     }).openTooltip();
 
     var polyline7 = L.polyline([
-      [750, -90],
-      [750, -1000]
+      [750, 0],
+      [750, -2540],
+      [1050, -2540],
+      [1050, -2780]
     ], { color: '#00ffff', className: "railway-line" }).addTo(railwayLayer);
-    polyline7.bindTooltip('初期スポーン接続', {
+    polyline7.bindTooltip('すしスキー線', {
       permanent: true,     // 常に表示する
       direction: 'center', // 線の中心に表示
       className: 'railway-label' // CSSでデザインもできるよ
@@ -272,9 +299,24 @@
 
     var polyline8 = L.polyline([
       [530, 845],
-      [872, 845]
+      [942, 845],
+      [942, 750]
     ], { color: '#0000ff', className: "railway-line" }).addTo(railwayLayer);
     polyline8.bindTooltip('整地師線', {
+      permanent: true,     // 常に表示する
+      direction: 'center', // 線の中心に表示
+      className: 'railway-label' // CSSでデザインもできるよ
+    }).openTooltip();
+
+    var polyline9 = L.polyline([
+      [450, 1150],
+      [450, 1210],
+      [375, 1210],
+      [375, 1265],
+      [290, 1265],
+      [290, 1290]
+    ], { color: '#ffaa00', className: "railway-line" }).addTo(railwayLayer);
+    polyline9.bindTooltip('ドグワン線', {
       permanent: true,     // 常に表示する
       direction: 'center', // 線の中心に表示
       className: 'railway-label' // CSSでデザインもできるよ
@@ -293,7 +335,29 @@
       .setLatLng(point1)
       .addTo(railwayLayer);
 
-
+    var point1_1 = [105, 175];
+    L.marker(point1_1, { icon: myIcon1 }).addTo(railwayLayer)
+    L.tooltip({
+      permanent: true,
+      direction: 'right', // 右側に表示
+      className: 'station-label',
+      offset: [10, 0]
+    })
+      .setContent('ポテトぺす駅')
+      .setLatLng(point1_1)
+      .addTo(railwayLayer);
+    
+    var point1_2 = [-300, 190];
+    L.marker(point1_2, { icon: myIcon1 }).addTo(railwayLayer)
+    L.tooltip({
+      permanent: true,
+      direction: 'right', // 右側に表示
+      className: 'station-label',
+      offset: [10, 0]
+    })
+      .setContent('ナスランド駅')
+      .setLatLng(point1_2)
+      .addTo(railwayLayer);
 
     var point2 = [80, -550];
     var myIcon2 = L.divIcon({ className: 'icon2', iconAnchor: [13, 13] });
@@ -345,6 +409,18 @@
       .setContent('中央駅')
       .setLatLng(point4)
       .addTo(railwayLayer);
+    
+    var point4_1 = [1050, -2780];
+    L.marker(point4_1, { icon: myIcon4 }).addTo(railwayLayer)
+    L.tooltip({
+      permanent: true,
+      direction: 'right', // 右側に表示
+      className: 'station-label',
+      offset: [10, 0]
+    })
+      .setContent('初期スポーン駅')
+      .setLatLng(point4_1)
+      .addTo(railwayLayer);
 
     var point5 = [675, 290];
     var myIcon5 = L.divIcon({ className: 'icon5', iconAnchor: [13, 13] });
@@ -395,7 +471,7 @@
       .setLatLng(point5_3)
       .addTo(railwayLayer);
 
-    var point6 = [872, 845];
+    var point6 = [942, 750];
     var myIcon6 = L.divIcon({ className: 'icon6', iconAnchor: [13, 13] });
     L.marker(point6, { icon: myIcon6 }).addTo(railwayLayer)
     L.tooltip({
@@ -404,8 +480,21 @@
       className: 'station-label',
       offset: [10, 0]
     })
-      .setContent('仮設整地師ビル前駅')
+      .setContent('拠点前駅')
       .setLatLng(point6)
+      .addTo(railwayLayer);
+
+    var point7 = [290, 1290];
+    var myIcon7 = L.divIcon({ className: 'icon7', iconAnchor: [13, 13] });
+    L.marker(point7, { icon: myIcon7 }).addTo(railwayLayer)
+    L.tooltip({
+      permanent: true,
+      direction: 'right', // 右側に表示
+      className: 'station-label',
+      offset: [10, 0]
+    })
+      .setContent('アウターヘブン駅')
+      .setLatLng(point7)
       .addTo(railwayLayer);
 
     railwayLayer.addTo(map)
@@ -469,6 +558,15 @@
       border: 3px solid #fdfdfd;
       box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
       background-color: rgb(0, 0, 255);
+    }
+
+    .icon7 {
+      width: 20px !important;
+      height: 20px !important;
+      border-radius: 10px;
+      border: 3px solid #fdfdfd;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+      background-color: rgb(255, 174, 0);
     }
   </style>
 
