@@ -48,283 +48,753 @@
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
+    
+
+    // タイルのサイズを監視して安全に +1px する
+function watchTileSize(tile) {
+
+    let lastWidth = null;
+    let lastHeight = null;
+
+    const observer = new MutationObserver(() => {
+        const w = parseFloat(tile.style.width);
+        const h = parseFloat(tile.style.height);
+
+        // styleが未設定の時は無視
+        if (isNaN(w) || isNaN(h)) return;
+
+        // すでに +1px 済みなら何もしない
+        if (w === lastWidth && h === lastHeight) return;
+
+        // 現在の Leaflet の設定値を記録（後で比較）
+        lastWidth = w;
+        lastHeight = h;
+
+        // --- 無限ループ防止のため、一旦監視を止める ---
+        observer.disconnect();
+
+        // width / height に +1px
+        tile.style.width = (w + 1) + "px";
+        tile.style.height = (h + 1) + "px";
+
+        // --- 上書き後に再度監視を開始 ---
+        observer.observe(tile, {
+            attributes: true,
+            attributeFilter: ["style"]
+        });
+    });
+
+    // 最初の監視開始
+    observer.observe(tile, {
+        attributes: true,
+        attributeFilter: ["style"]
+    });
+}
+
+
+// タイル追加を検知して監視をセットする
+const tileObserver = new MutationObserver((mutations) => {
+    for (const m of mutations) {
+        for (const node of m.addedNodes) {
+            if (node instanceof HTMLImageElement && node.classList.contains("leaflet-image-layer")) {
+                watchTileSize(node);
+            }
+        }
+    }
+});
+
+tileObserver.observe(document.body, {
+    childList: true,
+    subtree: true
+});
+
     // マップを初期化
     var map = L.map('map', {
-      crs: L.CRS.Simple,  // 独自画像用
+      crs: L.CRS.Simple,
       minZoom: -1
     });
 
+    const VERSION = "?ver=1.3"
+    const BASEURL = "https://potatotimekun.github.io/map/";
+    function fileExist(_url) {
+      var xhr;
+      xhr = new XMLHttpRequest();
+      xhr.open("HEAD", _url, false);
+      xhr.send(null);
+      return xhr.status == 200;
+    }
+    function _putMap(y, x, map) {
+      url = BASEURL + `mapData/${y}_${x}.png` + VERSION;
+      if (!fileExist(url)) return;
+      L.imageOverlay(url, [[500 * y, 500 * x], [500 * (y + 1), 500 * (x + 1)]]).addTo(map);
+    }
 
-    var mapVersion = "?ver=1"
-    // マップの画像（事前に用意したスクショ画像）
-    // 2枚のマップ画像を並べる
-    var image1 = L.imageOverlay('mapData/0_0.png?ver=1.2'+mapVersion, [[0, 0], [500, 500]]).addTo(map);
-    var image2 = L.imageOverlay('mapData/0_1.png?ver=1.1'+mapVersion, [[0, 500], [500, 500 * 2]]).addTo(map);
-    var image3 = L.imageOverlay('mapData/-1_0.png?ver=1.1'+mapVersion, [[-500, 0], [0, 500]]).addTo(map);
-    var image4 = L.imageOverlay('mapData/-1_1.png?ver=1.1'+mapVersion, [[-500, 500], [0, 500 * 2]]).addTo(map);
-    var image5 = L.imageOverlay('mapData/1_0.png?ver=1.1'+mapVersion, [[500, 0], [500 * 2, 500]]).addTo(map);
-    var image6 = L.imageOverlay('mapData/1_1.png?ver=1.1'+mapVersion, [[500, 500], [500 * 2, 500 * 2]]).addTo(map);
-    var image7 = L.imageOverlay('mapData/0_-1.png?ver=1.1'+mapVersion, [[0, -500], [500, 0]]).addTo(map);
-    var image8 = L.imageOverlay('mapData/-1_-2.png?ver=1.1'+mapVersion, [[-500, -500 * 2], [0, -500]]).addTo(map);
-    var image9 = L.imageOverlay('mapData/1_-2.png?ver=1.1'+mapVersion, [[500, -500 * 2], [500 * 2, -500]]).addTo(map);
-    var image10 = L.imageOverlay('mapData/1_-1.png?ver=1.1'+mapVersion, [[500, -500], [500 * 2, 0]]).addTo(map);
-    var image11 = L.imageOverlay('mapData/0_-2.png?ver=1.1'+mapVersion, [[0, -500 * 2], [500, -500]]).addTo(map);
-    var image12 = L.imageOverlay('mapData/-1_-1.png?ver=1.1'+mapVersion, [[-500, -500], [0, 0]]).addTo(map);
-    var image13 = L.imageOverlay('mapData/-1_2.png?ver=1.1'+mapVersion, [[-500, 500 * 2], [0, 500 * 3]]).addTo(map);
-    var image14 = L.imageOverlay('mapData/0_2.png?ver=1.1'+mapVersion, [[0, 500 * 2], [500, 500 * 3]]).addTo(map);
-    var image15 = L.imageOverlay('mapData/1_2.png?ver=1.2'+mapVersion, [[500, 500 * 2], [500 * 2, 500 * 3]]).addTo(map);
-    var image16 = L.imageOverlay('mapData/2_0.png?ver=1.1'+mapVersion, [[500 * 2, 0], [500 * 3, 500]]).addTo(map);
-    var image17 = L.imageOverlay('mapData/2_1.png?ver=1.1'+mapVersion, [[500 * 2, 500], [500 * 3, 500 * 2]]).addTo(map);
-    var image18 = L.imageOverlay('mapData/3_0.png?ver=1.1'+mapVersion, [[500 * 3, 0], [500 * 4, 500]]).addTo(map);
-    var image19 = L.imageOverlay('mapData/3_-1.png?ver=1.1'+mapVersion, [[500 * 3, -500], [500 * 4, 0]]).addTo(map);
-    var image20 = L.imageOverlay('mapData/1_-3.png?ver=1.1'+mapVersion, [[500, -500 * 3], [500 * 2, -500*2]]).addTo(map);
-    var image21 = L.imageOverlay('mapData/1_-4.png?ver=1.1'+mapVersion, [[500, -500 * 4], [500 * 2, -500*3]]).addTo(map);
-    var image22 = L.imageOverlay('mapData/1_-5.png?ver=1.1'+mapVersion, [[500, -500 * 5], [500 * 2, -500*4]]).addTo(map);
-    var image23 = L.imageOverlay('mapData/1_-6.png?ver=1.1'+mapVersion, [[500, -500 * 6], [500 * 2, -500*5]]).addTo(map);
-    var image24 = L.imageOverlay('mapData/2_-6.png?ver=1.1'+mapVersion, [[500 * 2, -500 * 6], [500 * 3, -500*5]]).addTo(map);
-    var image25 = L.imageOverlay('mapData/1_-7.png?ver=1.1'+mapVersion, [[500, -500 * 7], [500 * 2, -500*6]]).addTo(map);
+    function putMapImages(yRange, xRange, map) {
+      for (let i = yRange[0]; i <= yRange[1]; i++) {
+        for (let j = xRange[0]; j <= xRange[1]; j++) {
+          _putMap(i, j, map);
+        }
+      }
+    }
+
+    // マップタイルの配置
+    putMapImages([-1, 3], [-3, 2], map);
+    putMapImages([1, 2], [-7, -2], map);
 
     // マップの表示範囲
-    var bounds = [[-500, -500 * 2], [500 * 4, 500 * 3]]; // 全体をカバーするサイズ
+    var bounds = [[-500, -500 * 2], [500 * 3, 500 * 3]]; // 全体をカバーするサイズ
     map.fitBounds(bounds);
 
+    function putMarker(y, x, data, map) {
+      var markerHTML = ""
+      if (data.title != undefined) markerHTML += `<h2>${data.title}</h2>`
+      if (data.explane != undefined) markerHTML += `<p>${data.explane.replaceAll("\n", "<br>")}</p>`
+      if (data.image != undefined) markerHTML += `<img style="width: 300px;" src="${data.image}?ver=${VERSION}">`
+      L.marker([y, x]).addTo(map)
+        .bindPopup(markerHTML);
+    }
+
     // 地点マーカーを置く
-    var marker = L.marker([90, 490]).addTo(map)
-      .bindPopup('<h2>マセイモ島</h2><p>座標: 1220 72 900<br>居住者: 塩ポテト君</p><img style="width: 300px;" src="images/maseimo_island.png?ver=1">');
-    var marker2 = L.marker([300, 780]).addTo(map)
-      .bindPopup('<h2>すしすきー大学</h2><p>座標: 1360 70 750<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/sushi_uni.png">');
-    var marker3 = L.marker([250, 1140]).addTo(map)
-      .bindPopup('<h2>デンチョス城</h2><p>座標: 1545 65 775<br>制作者: 光奏</p><img style="width: 300px;" src="images/chos_castle.png">');
-    var marker4 = L.marker([-100, 1140]).addTo(map)
-      .bindPopup('<h2>建設中？</h2><p>座標: 1550 231 950<br>制作者: 光奏</p><img style="width: 300px;" src="images/denchos_kuchu.jpeg">');
-    var marker5 = L.marker([-300, 790]).addTo(map)
-      .bindPopup('<h2>BIG KUCHIBASHI</h2><p>座標: 1370 62 1114<br>制作者: 光奏</p><img style="width: 300px;" src="images/water_kuchibashi.png">');
-    var marker6 = L.marker([730, 650]).addTo(map)
-      .bindPopup('<h2>競馬場予定地</h2><p>建設中<br>座標: 1300 70 600<br>制作者: チャル建設</p>');
-    var marker7 = L.marker([865, 765]).addTo(map)
-      .bindPopup('<h2>整地師事務所</h2><p>座標: 1330 70 520<br>制作者: 久月</p><img style="width: 300px;" src="images/seichishi.png">');
-    var marker8 = L.marker([865, 330]).addTo(map)
-      .bindPopup('<h2>TOJI\'s HOUSE</h2><p>座標: 1140 64 510<br>居住者: たまごとじのすけ</p><img style="width: 300px;" src="images/toji_house.png">');
-    var marker9 = L.marker([80, 20]).addTo(map)
-      .bindPopup('<h2>ぺす像</h2><p>座標: 1000 71 900<br>制作者: ?</p><img style="width: 300px;" src="images/pes_zou.png">');
-    var marker10 = L.marker([240, 170]).addTo(map)
-      .bindPopup('<h2>Pes Tower</h2><p>座標: 1045 72 850<br>制作者: ?</p><img style="width: 300px;" src="images/pes_tower.png">');
-    var marker11 = L.marker([250, 130]).addTo(map)
-      .bindPopup('<h2>四重の塔</h2><p>座標: 1045 72 850<br>制作者: ?</p><img style="width: 300px;" src="images/pes_tower.png">');
-    var marker12 = L.marker([270, -150]).addTo(map)
-      .bindPopup('<h2>かじきの家</h2><p>座標: 882 63 809<br>居住者: かじき</p><img style="width: 300px;" src="images/kajiki_house.png">');
-    var marker13 = L.marker([150, -700]).addTo(map)
-      .bindPopup('<h2>コロッセオ</h2><p>座標: 660 71 880<br>制作者: てくてく建設</p><img style="width: 300px;" src="images/korosu.png">');
-    var marker14 = L.marker([490, -290]).addTo(map)
-      .bindPopup('<h2>トラップタワー&てくてく像</h2><p>座標: 819 73 703<br>制作者: ?</p><img style="width: 300px;" src="images/tt.png">');
-    var marker15 = L.marker([710, 30]).addTo(map)
-      .bindPopup('<h2>本拠点 本島</h2><p>座標: 975 79 590</p><img style="width: 300px;" src="images/base_kyoten.png">');
-    var marker16 = L.marker([750, 50]).addTo(map)
-      .bindPopup('<h2>成人男性ハウス</h2><p>座標: 993 79 580<br>制作者: コヤマ</p><img style="width: 300px;" src="images/seijindansei.png">');
-    var marker17 = L.marker([770, -35]).addTo(map)
-      .bindPopup('<h2>いじぇハウス</h2><p>座標: 944 75 571<br>居住者: いじぇん</p><img style="width: 300px;" src="images/ije_house.png">');
-    var marker18 = L.marker([730, 200]).addTo(map)
-      .bindPopup('<h2>しなりハウス</h2><p>座標: 1046 87 584<br>居住者: しなり</p><img style="width: 300px;" src="images/shinari_house.png">');
-    var marker19 = L.marker([760, 180]).addTo(map)
-      .bindPopup('<h2>タマナシ地下迷宮</h2><p>座標: 1048 87 578<br>制作者: タマナシ</p><img style="width: 300px;" src="images/tama_chika.png">');
-    var marker20 = L.marker([760, 260]).addTo(map)
-      .bindPopup('<h2>むのむのおうち</h2><p>座標: 1081 83 581<br>居住者: むのむ</p><img style="width: 300px;" src="images/mnm_house.png">');
-    var marker21 = L.marker([700, 310]).addTo(map)
-      .bindPopup('<h2>あてむ ず はうす （笑）</h2><p>座標: 1113 86 598<br>居住者: あてむ</p><img style="width: 300px;" src="images/atm_house.png">');
-    var marker22 = L.marker([650, 293]).addTo(map)
-      .bindPopup('<h2>デンチョスのお家</h2><p>座標: 1110 87 611<br>居住者: 光奏</p><img style="width: 300px;" src="images/chos_house.png">');
-    var marker23 = L.marker([590, 293]).addTo(map)
-      .bindPopup('<h2>デンチョス港</h2><p>座標: 1108 64 656<br>居住者: 光奏</p>');
-    var marker24 = L.marker([720, 100]).addTo(map)
-      .bindPopup('<h2>移転の館</h2><p>座標: 1010 79 587</p><img style="width: 300px;" src="images/iten.png">');
-    var marker25 = L.marker([790, 110]).addTo(map)
-      .bindPopup('<h2>殺し愛の間</h2><p>座標: 1002 95 550<br>制作者: ?</p><img style="width: 300px;" src="images/koroshi.png">');
-    var marker26 = L.marker([620, 110]).addTo(map)
-      .bindPopup('<h2>旧デンチョスの家 東屋</h2><p>座標: 1004 72 636<br>制作者: デンチョス</p><img style="width: 300px;" src="images/old_chos.png">');
-    var marker27 = L.marker([820, -540]).addTo(map)
-      .bindPopup('<h2>タマナシ城塞</h2><p>座標: 689 67 552<br>制作者: タマナシ</p><img style="width: 300px;" src="images/tama_house.png">');
-    var marker28 = L.marker([775, -510]).addTo(map)
-      .bindPopup('<h2>タマナシ港</h2><p>座標: 689 67 552<br>制作者: タマナシ</p>');
-    var marker29 = L.marker([640, -770]).addTo(map)
-      .bindPopup('<h2>しなり城</h2><p>座標: 611 68 604<br>制作者: しなり</p><img style="width: 300px;" src="images/shinari_castle.png">');
-    var marker30 = L.marker([1750, 100]).addTo(map)
-      .bindPopup('<h2>北島・コマンドアイランド</h2><p>座標: 996 82 38</p><img style="width: 300px;" src="images/kita_island.png">');
-    var marker31 = L.marker([170, 240]).addTo(map)
-      .bindPopup('<h2>アパート ポテトライフ</h2><p>座標: 1084 72 847<br>制作者: 塩ポテト君<br>居住者: 塩ポテト君</p><img style="width: 300px;" src="images/potatolife.png">');
-    var marker32 = L.marker([310, 410]).addTo(map)
-      .bindPopup('<h2>イモ クルーズ</h2><p>座標: 1175 65 788<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/imoship.png">');
-    var marker33 = L.marker([200, 330]).addTo(map)
-      .bindPopup('<h2>レストラン Nyap</h2><p>座標: 1120 72 848<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/nyap.png">');
-    var marker34 = L.marker([-70, 420]).addTo(map)
-      .bindPopup('<h2>豆腐建築</h2><p>座標: 1179 65 969<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/tofu.png">');
-    var marker35 = L.marker([310, 510]).addTo(map)
-      .bindPopup('<h2>マセイモ港</h2><p>座標: 1220 64 801<br>制作者: 塩ポテト君</p>');
-    var marker36 = L.marker([110, 510]).addTo(map)
-      .bindPopup('<h2>ハートの桜と空中じゃがいも畑</h2><p>座標: 1220 72 873<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/imosakura.png">');
-    var marker37 = L.marker([220, 510]).addTo(map)
-      .bindPopup('<h2>マセイモ像</h2><p>座標: 1233 72 818<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/imo_statue.png">');
-    var marker38 = L.marker([8, 475]).addTo(map)
-      .bindPopup('<h2>罪を償うナス像</h2><p>制作者: 塩ポテト君</p>');
-    var marker39 = L.marker([100, 430]).addTo(map)
-      .bindPopup('<h2>吊るされるナス像</h2><p>制作者: 塩ポテト君</p>');
-    var marker40 = L.marker([140, 445]).addTo(map)
-      .bindPopup('<h2>マセイモ交番</h2><p>制作者: 塩ポテト君</p>');
-    var marker41 = L.marker([-40, 540]).addTo(map)
-      .bindPopup('<h2>マセイモ弓道場</h2><p>座標: 1236 72 938<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/imo_kyudo.png">');
-    var marker42 = L.marker([10, 400]).addTo(map)
-      .bindPopup('<h2>全自動パンプキンパイ工場</h2><p>座標: 1161 72 940<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/kabocha.png">');
-    var marker43 = L.marker([120, 580]).addTo(map)
-      .bindPopup('<h2>ジェットコースター乗り場</h2><p>制作者: 塩ポテト君</p>');
-    var marker44 = L.marker([250, 565]).addTo(map)
-      .bindPopup('<h2>日付カウントアップ回路</h2><p>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/count.png">');
-    var marker45 = L.marker([260, 550]).addTo(map)
-      .bindPopup('<h2>日付カウントアップ回路見学路</h2><p>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/count2.png">');
-    var marker46 = L.marker([260, 490]).addTo(map)
-      .bindPopup('<h2>マセイモ島案内図</h2><p>制作者: 塩ポテト君</p>');
-    var marker47 = L.marker([80, 300]).addTo(map)
-      .bindPopup('<h2>ポテト港-イモガンダム前</h2><p>座標: 1108 65 908<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/imoshipsakura.png">');
-    var marker48 = L.marker([140, 320]).addTo(map)
-      .bindPopup('<h2>イモガンダム</h2><p>座標: 1123 65 892<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/imogandam.png">');
-    var marker49 = L.marker([230, 270]).addTo(map)
-      .bindPopup('<h2>ナス公園（笑）</h2><p>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/nasupark.png">');
-    var marker50 = L.marker([60, 110]).addTo(map)
-      .bindPopup('<h2>とじのすけ像</h2><p>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/tojinosuke.jpeg">');
-    var marker51 = L.marker([90, 200]).addTo(map)
-      .bindPopup('<h2>溶岩にゃぷ</h2><p>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/lavanyap.jpeg">');
-    var marker52 = L.marker([-400, 200]).addTo(map)
-      .bindPopup('<h2>ナスランド</h2><p>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/nasuland.jpeg">');
-    var marker53 = L.marker([250, 1350]).addTo(map)
-      .bindPopup('<h2>武装要塞国家アウターヘブン</h2><p>座標: 1633 63 766<br>制作者: ドグワン</p><img style="width: 300px;" src="images/dogwan_village.jpeg">');
-    var marker54 = L.marker([1050, 810]).addTo(map)
-      .bindPopup('<h2>金うんち神社</h2><p>座標: 1363 70 420<br>制作者: しなり？</p><img style="width: 300px;" src="images/gold_unchi.jpeg">');
-    var marker55 = L.marker([1200, 390]).addTo(map)
-      .bindPopup('<h2>海上都市 芋ータル(建設中)</h2><p>座標: 1161 65 346<br>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/imo_taru.jpeg">');
-    var marker56 = L.marker([1000, -2800]).addTo(map)
-      .bindPopup('<h2>タマナシのやらかし見学ロード</h2><p>座標: -479 72 427<br>やらかし者: タマナシ</p><img style="width: 300px;" src="images/tamanashi_tnt.jpeg">');
-    var marker57  = L.marker([600, -3200]).addTo(map)
-    .bindPopup('<h2>月玉農場</h2><p>座標: -681 63 645<br>制作者: 月玉</p><img style="width: 300px;" src="images/tsukitama_house.jpeg">');
-    var marker58   = L.marker([400, 300]).addTo(map)
-    .bindPopup('<h2>マセイモ航空 MASE-300YEN</h2><p>制作者: 塩ポテト君</p><img style="width: 300px;" src="images/imo_airplane.jpeg">');
-    var marker59   = L.marker([520, 1210]).addTo(map)
-    .bindPopup('<h2>あかみハウス</h2><p>座標: 1569 70 701<br>制作者: あかみ</p><img style="width: 300px;" src="images/akami_house.jpeg">');
-    
+    putMarker(
+      90, 490,
+      {
+        title: "マセイモ島",
+        explane: "座標: 1220 72 900\n居住者: 塩ポテト君",
+        image: "images/maseimo_island.png"
+      },
+      map
+    );
+    putMarker(
+      300, 780,
+      {
+        title: "すしすきー大学",
+        explane: "座標: 1360 70 750\n制作者: 塩ポテト君",
+        image: "images/sushi_uni.png"
+      },
+      map
+    );
+    putMarker(
+      250, 1140,
+      {
+        title: "デンチョス城",
+        explane: "座標: 1545 65 775<br>制作者: 光奏",
+        image: "images/chos_castle.png"
+      },
+      map
+    );
+    putMarker(
+      -100, 1140,
+      {
+        title: "建設中？",
+        explane: "座標: 1550 231 950\n制作者: 光奏",
+        image: "images/denchos_kuchu.jpeg"
+      },
+      map
+    );
+    putMarker(
+      -300, 790,
+      {
+        title: "BIG KUCHIBASHI",
+        explane: "座標: 1370 62 1114\n制作者: 光奏",
+        image: "images/water_kuchibashi.png"
+      },
+      map
+    );
+    putMarker(
+      730, 650,
+      {
+        title: "競馬場予定地",
+        explane: "建設中\n座標: 1300 70 600\n制作者: チャル建設"
+      },
+      map
+    );
+    putMarker(
+      865, 765,
+      {
+        title: "整地師事務所",
+        explane: "座標: 1330 70 520\n制作者: 久月",
+        image: "images/seichishi.png"
+      },
+      map
+    );
+    putMarker(
+      865, 330,
+      {
+        title: "TOJI\'s HOUSE",
+        explane: "座標: 1140 64 510\n居住者: たまごとじのすけ",
+        image: "images/toji_house.png"
+      },
+      map
+    );
+    putMarker(
+      80, 20,
+      {
+        title: "ぺす像",
+        explane: "座標: 1000 71 900\n制作者: ?",
+        image: "images/pes_zou.png"
+      },
+      map
+    );
+    putMarker(
+      240, 170,
+      {
+        title: "Pes Tower",
+        explane: "座標: 1045 72 850\n制作者: ?",
+        image: "images/pes_tower.png"
+      },
+      map
+    );
+    putMarker(
+      250, 130,
+      {
+        title: "四重の塔",
+        explane: "座標: 1045 72 850\n制作者: ?",
+        image: "images/pes_tower.png"
+      },
+      map
+    );
+    putMarker(
+      270, -150,
+      {
+        title: "かじきの家",
+        explane: "座標: 882 63 809\n居住者: かじき",
+        image: "images/kajiki_house.png"
+      },
+      map
+    );
+    putMarker(
+      150, -700,
+      {
+        title: "コロッセオ",
+        explane: "座標: 660 71 880\n制作者: てくてく建設",
+        image: "images/korosu.png"
+      },
+      map
+    );
+    putMarker(
+      490, -290,
+      {
+        title: "トラップタワー&てくてく像",
+        explane: "座標: 819 73 703\n制作者: ?",
+        image: "images/tt.png"
+      },
+      map
+    );
+    putMarker(
+      710, 30,
+      {
+        title: "本拠点 本島",
+        explane: "座標: 975 79 590",
+        image: "images/base_kyoten.png"
+      },
+      map
+    );
+    putMarker(
+      750, 50,
+      {
+        title: "成人男性ハウス",
+        explane: "座標: 993 79 580\n制作者: コヤマ",
+        image: "images/seijindansei.png"
+      },
+      map
+    );
+    putMarker(
+      770, -35,
+      {
+        title: "いじぇハウス",
+        explane: "座標: 944 75 571\n居住者: いじぇん",
+        image: "images/ije_house.png"
+      },
+      map
+    );
+    putMarker(
+      730, 200,
+      {
+        title: "しなりハウス",
+        explane: "座標: 1046 87 584\n居住者: しなり",
+        image: "images/shinari_house.png"
+      },
+      map
+    );
+    putMarker(
+      760, 180,
+      {
+        title: "タマナシ地下迷宮",
+        explane: "座標: 1048 87 578\n制作者: タマナシ",
+        image: "images/tama_chika.png"
+      },
+      map
+    );
+    putMarker(
+      760, 260,
+      {
+        title: "むのむのおうち",
+        explane: "座標: 1081 83 581\n居住者: むのむ",
+        image: "images/mnm_house.png"
+      },
+      map
+    );
+    putMarker(
+      700, 310,
+      {
+        title: "あてむ ず はうす （笑）",
+        explane: "座標: 1113 86 598\n居住者: あてむ",
+        image: "images/atm_house.png"
+      },
+      map
+    );
+    putMarker(
+      650, 293,
+      {
+        title: "デンチョスのお家",
+        explane: "座標: 1110 87 611\n居住者: 光奏",
+        image: "images/chos_house.png"
+      },
+      map
+    );
+    putMarker(
+      590, 293,
+      {
+        title: "デンチョス港",
+        explane: "座標: 1108 64 656\n居住者: 光奏"
+      },
+      map
+    );
+    putMarker(
+      720, 100,
+      {
+        title: "移転の館",
+        explane: "座標: 1010 79 587",
+        image: "images/iten.png"
+      },
+      map
+    );
+    putMarker(
+      790, 110,
+      {
+        title: "殺し愛の間",
+        explane: "座標: 1002 95 550\n制作者: ?",
+        image: "images/koroshi.png"
+      },
+      map
+    );
+    putMarker(
+      620, 110,
+      {
+        title: "旧デンチョスの家 東屋",
+        explane: "座標: 1004 72 636\n制作者: デンチョス",
+        image: "images/old_chos.png"
+      },
+      map
+    );
+    putMarker(
+      820, -540,
+      {
+        title: "タマナシ城塞",
+        explane: "座標: 689 67 552\n制作者: タマナシ",
+        image: "images/tama_house.png"
+      },
+      map
+    );
+    putMarker(
+      775, -510,
+      {
+        title: "タマナシ港",
+        explane: "座標: 689 67 552\n制作者: タマナシ"
+      },
+      map
+    );
+    putMarker(
+      640, -770,
+      {
+        title: "しなり城",
+        explane: "座標: 611 68 604\n制作者: しなり",
+        image: "images/shinari_castle.png"
+      },
+      map
+    );
+    putMarker(
+      1750, 100,
+      {
+        title: "北島・コマンドアイランド",
+        explane: "座標: 996 82 38",
+        image: "images/kita_island.png"
+      },
+      map
+    );
+    putMarker(
+      170, 240,
+      {
+        title: "アパート ポテトライフ",
+        explane: "座標: 1084 72 847\n制作者: 塩ポテト君\n居住者: 塩ポテト君",
+        image: "images/potatolife.png"
+      },
+      map
+    );
+    putMarker(
+      310, 410,
+      {
+        title: "イモ クルーズ",
+        explane: "座標: 1175 65 788\n制作者: 塩ポテト君",
+        image: "images/imoship.png"
+      },
+      map
+    );
+    putMarker(
+      200, 330,
+      {
+        title: "レストラン Nyap",
+        explane: "座標: 1120 72 848\n制作者: 塩ポテト君",
+        image: "images/nyap.png"
+      },
+      map
+    );
+    putMarker(
+      -70, 420,
+      {
+        title: "豆腐建築",
+        explane: "座標: 1179 65 969\n制作者: 塩ポテト君",
+        image: "images/tofu.png"
+      },
+      map
+    );
+    putMarker(
+      310, 510,
+      {
+        title: "マセイモ港",
+        explane: "座標: 1220 64 801\n制作者: 塩ポテト君"
+      },
+      map
+    );
+    putMarker(
+      110, 510,
+      {
+        title: "ハートの桜と空中じゃがいも畑",
+        explane: "座標: 1220 72 873\n制作者: 塩ポテト君",
+        image: "images/imosakura.png"
+      },
+      map
+    );
+    putMarker(
+      220, 510,
+      {
+        title: "マセイモ像",
+        explane: "座標: 1233 72 818\n制作者: 塩ポテト君",
+        image: "images/imo_statue.png"
+      },
+      map
+    );
+    putMarker(
+      8, 475,
+      {
+        title: "罪を償うナス像",
+        explane: "制作者: 塩ポテト君"
+      },
+      map
+    );
+    putMarker(
+      100, 430,
+      {
+        title: "吊るされるナス像",
+        explane: "制作者: 塩ポテト君"
+      },
+      map
+    );
+    putMarker(
+      140, 445,
+      {
+        title: "マセイモ交番",
+        explane: "制作者: 塩ポテト君"
+      },
+      map
+    );
+    putMarker(
+      -40, 540,
+      {
+        title: "マセイモ弓道場",
+        explane: "座標: 1236 72 938\n制作者: 塩ポテト君",
+        image: "images/imo_kyudo.png"
+      },
+      map
+    );
+    putMarker(
+      10, 400,
+      {
+        title: "全自動パンプキンパイ工場",
+        explane: "座標: 1161 72 940\n制作者: 塩ポテト君",
+        image: "images/kabocha.png"
+      },
+      map
+    );
+    putMarker(
+      120, 580,
+      {
+        title: "ジェットコースター乗り場",
+        explane: "制作者: 塩ポテト君"
+      },
+      map
+    );
+    putMarker(
+      250, 565,
+      {
+        title: "日付カウントアップ回路",
+        explane: "制作者: 塩ポテト君",
+        image: "images/count.png"
+      },
+      map
+    );
+    putMarker(
+      260, 550,
+      {
+        title: "日付カウントアップ回路見学路",
+        explane: "制作者: 塩ポテト君",
+        image: "images/count2.png"
+      },
+      map
+    );
+    putMarker(
+      260, 490,
+      {
+        title: "マセイモ島案内図",
+        explane: "制作者: 塩ポテト君"
+      },
+      map
+    );
+    putMarker(
+      80, 300,
+      {
+        title: "ポテト港-イモガンダム前",
+        explane: "座標: 1108 65 908\n制作者: 塩ポテト君",
+        image: "images/imoshipsakura.png"
+      },
+      map
+    );
+    putMarker(
+      140, 320,
+      {
+        title: "イモガンダム",
+        explane: "座標: 1123 65 892\n制作者: 塩ポテト君",
+        image: "images/imogandam.png"
+      },
+      map
+    );
+    putMarker(
+      230, 270,
+      {
+        title: "ナス公園（笑）",
+        explane: "制作者: 塩ポテト君",
+        image: "images/nasupark.png"
+      },
+      map
+    );
+    putMarker(
+      60, 110,
+      {
+        title: "とじのすけ像",
+        explane: "制作者: 塩ポテト君",
+        image: "images/tojinosuke.jpeg"
+      },
+      map
+    );
+    putMarker(
+      90, 200,
+      {
+        title: "溶岩にゃぷ",
+        explane: "制作者: 塩ポテト君",
+        image: "images/lavanyap.jpeg"
+      },
+      map
+    );
+    putMarker(
+      -400, 200,
+      {
+        title: "ナスランド",
+        explane: "制作者: 塩ポテト君",
+        image: "images/nasuland.jpeg"
+      },
+      map
+    );
+    putMarker(
+      250, 1350,
+      {
+        title: "武装要塞国家アウターヘブン",
+        explane: "座標: 1633 63 766\n制作者: ドグワン",
+        image: "images/dogwan_village.jpeg"
+      },
+      map
+    );
+    putMarker(
+      1050, 810,
+      {
+        title: "金うんち神社",
+        explane: "座標: 1363 70 420\n制作者: しなり？",
+        image: "images/gold_unchi.jpeg"
+      },
+      map
+    );
+    putMarker(
+      1200, 390,
+      {
+        title: "海上都市 芋ータル(建設中)",
+        explane: "座標: 1161 65 346\n制作者: 塩ポテト君",
+        image: "images/imo_taru.jpeg"
+      },
+      map
+    );
+    putMarker(
+      1000, -2800,
+      {
+        title: "タマナシのやらかし見学ロード",
+        explane: "座標: -479 72 427\nやらかし者: タマナシ",
+        image: "images/tamanashi_tnt.jpeg"
+      },
+      map
+    );
+    putMarker(
+      600, -3200,
+      {
+        title: "月玉農場",
+        explane: "座標: -681 63 645\n制作者: 月玉",
+        image: "images/tsukitama_house.jpeg"
+      },
+      map
+    );
+    putMarker(
+      400, 300,
+      {
+        title: "マセイモ航空 MASE-300YEN",
+        explane: "制作者: 塩ポテト君",
+        image: "images/imo_airplane.jpeg"
+      },
+      map
+    );
+    putMarker(
+      520, 1210,
+      {
+        title: "あかみハウス",
+        explane: "座標: 1569 70 701\n制作者: あかみ",
+        image: "images/akami_house.jpeg"
+      },
+      map
+    )
+
     // 線路用のレイヤーグループを作る
     var railwayLayer = L.layerGroup([]);
 
+    function drawRailway(points, name, color) {
+      var polyline = L.polyline(points, { color: color, className: "railway-line" }).addTo(railwayLayer);
+      polyline.bindTooltip(name, {
+        permanent: true,     // 常に表示する
+        direction: 'center', // 線の中心に表示
+        className: 'railway-label' // CSSでデザインもできるよ
+      }).openTooltip();
+    }
+
     // 線路を引く
-    var polyline = L.polyline([
-      [170, 473],
-      [190, 473],
-      [190, 640],
-      [530, 640]
-    ], { color: '#ff8888', className: "railway-line" }).addTo(railwayLayer);
-    polyline.bindTooltip('ポテト線', {
-      permanent: true,     // 常に表示する
-      direction: 'center', // 線の中心に表示
-      className: 'railway-label' // CSSでデザインもできるよ
-    }).openTooltip();
+    drawRailway(
+      [
+        [170, 473],
+        [190, 473],
+        [190, 640],
+        [530, 640]
+      ],
+      'ポテト線',
+      '#ff8888'
+    );
 
-    var polyline2 = L.polyline([
-      [170, 473],
-      [200, 473],
-      [200, 175],
-      [50, 175],
-      [50, 148],
-      [-300, 148],
-      [-300, 190]
-    ], { color: '#ff8888', className: "railway-line" }).addTo(railwayLayer);
-    polyline2.bindTooltip('ポテト線', {
-      permanent: true,     // 常に表示する
-      direction: 'center', // 線の中心に表示
-      className: 'railway-label' // CSSでデザインもできるよ
-    }).openTooltip();
+    drawRailway(
+      [
+        [170, 473],
+        [200, 473],
+        [200, 175],
+        [50, 175],
+        [50, 148],
+        [-300, 148],
+        [-300, 190]
+      ],
+      'ポテト線',
+      '#ff8888'
+    );
 
-    var polyline3 = L.polyline([
-      [105, 100],
-      [105, -550],
-      [80, -550]
-    ], { color: '#ff0000', className: "railway-line" }).addTo(railwayLayer);
-    polyline3.bindTooltip('コロッセオ線', {
-      permanent: true,     // 常に表示する
-      direction: 'center', // 線の中心に表示
-      className: 'railway-label' // CSSでデザインもできるよ
-    }).openTooltip();
+    drawRailway(
+      [
+        [105, 100],
+        [105, -550],
+        [80, -550]
+      ],
+      'コロッセオ線',
+      '#ff0000'
+    );
 
-    var polyline4 = L.polyline([
-      [105, 100],
-      [105, 150],
-      [650, 150],
-      [650, 50],
-      [675, 50]
-    ], { color: '#ffffff', className: "railway-line" }).addTo(railwayLayer);
-    polyline4.bindTooltip('メトロぺす線', {
-      permanent: true,     // 常に表示する
-      direction: 'center', // 線の中心に表示
-      className: 'railway-label' // CSSでデザインもできるよ
-    }).openTooltip();
+    drawRailway(
+      [
+        [105, 100],
+        [105, 150],
+        [650, 150],
+        [650, 50],
+        [675, 50]
+      ],
+      'メトロぺす線',
+      '#ffffff'
+    );
 
-    var polyline5 = L.polyline([
-      [675, 50],
-      [675, 30],
-      [1255, 30],
-      [1255, 175],
-      [1800, 175]
-    ], { color: '#8844ff', className: "railway-line" }).addTo(railwayLayer);
-    polyline5.bindTooltip('北線', {
-      permanent: true,     // 常に表示する
-      direction: 'center', // 線の中心に表示
-      className: 'railway-label' // CSSでデザインもできるよ
-    }).openTooltip();
+    drawRailway(
+      [
+        [675, 50],
+        [675, 30],
+        [1255, 30],
+        [1255, 175],
+        [1800, 175]
+      ],
+      '北線',
+      '#8844ff'
+    );
 
-    var polyline6 = L.polyline([
-      [675, 50],
-      [675, 450],
-      [530, 450],
-      [530, 1141],
-      [370, 1141]
-    ], { color: '#ffff00', className: "railway-line" }).addTo(railwayLayer);
-    polyline6.bindTooltip('デンチョス線', {
-      permanent: true,     // 常に表示する
-      direction: 'center', // 線の中心に表示
-      className: 'railway-label' // CSSでデザインもできるよ
-    }).openTooltip();
+    drawRailway(
+      [
+        [675, 50],
+        [675, 450],
+        [530, 450],
+        [530, 1141],
+        [370, 1141]
+      ],
+      'デンチョス線',
+      '#ffff00'
+    );
 
-    var polyline7 = L.polyline([
-      [750, 0],
-      [750, -2540],
-      [1050, -2540],
-      [1050, -2780]
-    ], { color: '#00ffff', className: "railway-line" }).addTo(railwayLayer);
-    polyline7.bindTooltip('すしスキー線', {
-      permanent: true,     // 常に表示する
-      direction: 'center', // 線の中心に表示
-      className: 'railway-label' // CSSでデザインもできるよ
-    }).openTooltip();
+    drawRailway(
+      [
+        [750, 0],
+        [750, -2540],
+        [1050, -2540],
+        [1050, -2780]
+      ],
+      'すしスキー線',
+      '#00ffff'
+    );
 
-    var polyline8 = L.polyline([
-      [530, 845],
-      [942, 845],
-      [942, 750]
-    ], { color: '#0000ff', className: "railway-line" }).addTo(railwayLayer);
-    polyline8.bindTooltip('整地師線', {
-      permanent: true,     // 常に表示する
-      direction: 'center', // 線の中心に表示
-      className: 'railway-label' // CSSでデザインもできるよ
-    }).openTooltip();
+    drawRailway(
+      [
+        [530, 845],
+        [942, 845],
+        [942, 750]
+      ],
+      '整地師線',
+      '#0000ff'
+    );
 
-    var polyline9 = L.polyline([
-      [450, 1150],
-      [450, 1210],
-      [375, 1210],
-      [375, 1265],
-      [290, 1265],
-      [290, 1290]
-    ], { color: '#ffaa00', className: "railway-line" }).addTo(railwayLayer);
-    polyline9.bindTooltip('ドグワン線', {
-      permanent: true,     // 常に表示する
-      direction: 'center', // 線の中心に表示
-      className: 'railway-label' // CSSでデザインもできるよ
-    }).openTooltip();
+    drawRailway(
+      [
+        [450, 1150],
+        [450, 1210],
+        [375, 1210],
+        [375, 1265],
+        [290, 1265],
+        [290, 1290]
+      ],
+      'ドグワン線',
+      '#ffaa00'
+    );
 
     var point1 = [170, 473];
     var myIcon1 = L.divIcon({ className: 'icon1', iconAnchor: [13, 13] });
@@ -350,7 +820,7 @@
       .setContent('ポテトぺす駅')
       .setLatLng(point1_1)
       .addTo(railwayLayer);
-    
+
     var point1_2 = [-300, 190];
     L.marker(point1_2, { icon: myIcon1 }).addTo(railwayLayer)
     L.tooltip({
@@ -413,7 +883,7 @@
       .setContent('中央駅')
       .setLatLng(point4)
       .addTo(railwayLayer);
-    
+
     var point4_1 = [1050, -2780];
     L.marker(point4_1, { icon: myIcon4 }).addTo(railwayLayer)
     L.tooltip({
@@ -502,7 +972,6 @@
       .addTo(railwayLayer);
 
     railwayLayer.addTo(map)
-
   </script>
   <style>
     .railway-line {
@@ -571,6 +1040,11 @@
       border: 3px solid #fdfdfd;
       box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
       background-color: rgb(255, 174, 0);
+    }
+
+    .leaflet-image-layer {
+      image-rendering: pixelated;      /* 一番効果が高い */
+      image-rendering: crisp-edges;
     }
   </style>
 
