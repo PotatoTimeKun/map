@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>非公式すしすきーマイクラサーバ マップ</title>
+  <title>すしすきーマイクラサーバ マップ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
@@ -11,6 +11,7 @@
       height: 100vh;
     }
   </style>
+  <link rel="icon" href="fav.png" type="image/png">
 </head>
 
 <body>
@@ -48,15 +49,15 @@
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    
+
 
     // タイルのサイズを監視して安全に +1px する
-function watchTileSize(tile) {
+    function watchTileSize(tile) {
 
-    let lastWidth = null;
-    let lastHeight = null;
+      let lastWidth = null;
+      let lastHeight = null;
 
-    const observer = new MutationObserver(() => {
+      const observer = new MutationObserver(() => {
         const w = parseFloat(tile.style.width);
         const h = parseFloat(tile.style.height);
 
@@ -79,34 +80,34 @@ function watchTileSize(tile) {
 
         // --- 上書き後に再度監視を開始 ---
         observer.observe(tile, {
-            attributes: true,
-            attributeFilter: ["style"]
+          attributes: true,
+          attributeFilter: ["style"]
         });
-    });
+      });
 
-    // 最初の監視開始
-    observer.observe(tile, {
+      // 最初の監視開始
+      observer.observe(tile, {
         attributes: true,
         attributeFilter: ["style"]
-    });
-}
-
-
-// タイル追加を検知して監視をセットする
-const tileObserver = new MutationObserver((mutations) => {
-    for (const m of mutations) {
-        for (const node of m.addedNodes) {
-            if (node instanceof HTMLImageElement && node.classList.contains("leaflet-image-layer")) {
-                watchTileSize(node);
-            }
-        }
+      });
     }
-});
 
-tileObserver.observe(document.body, {
-    childList: true,
-    subtree: true
-});
+
+    // タイル追加を検知して監視をセットする
+    const tileObserver = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        for (const node of m.addedNodes) {
+          if (node instanceof HTMLImageElement && node.classList.contains("leaflet-image-layer")) {
+            watchTileSize(node);
+          }
+        }
+      }
+    });
+
+    tileObserver.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
 
     // マップを初期化
     var map = L.map('map', {
@@ -115,31 +116,25 @@ tileObserver.observe(document.body, {
     });
 
     const VERSION = "?ver=1.3"
-    const BASEURL = "https://potatotimekun.github.io/map/";
-    function fileExist(_url) {
-      var xhr;
-      xhr = new XMLHttpRequest();
-      xhr.open("HEAD", _url, false);
-      xhr.send(null);
-      return xhr.status == 200;
-    }
+    const MAPNUMLIST = [
+      [-1, -2], [-1, -1], [-1, 0], [-1, 1], [-1, 2],
+      [0, -2], [0, -1], [0, 0], [0, 1], [0, 2],
+      [1, -7], [1, -6], [1, -5], [1, -4], [1, -3], [1, -2], [1, -1], [1, 0], [1, 1], [1, 2],
+      [2, -6], [2, 0], [2, 1],
+      [3, -1], [3, 0]
+    ]
     function _putMap(y, x, map) {
-      url = BASEURL + `mapData/${y}_${x}.png` + VERSION;
-      if (!fileExist(url)) return;
+      url = `mapData/${y}_${x}.png` + VERSION;
       L.imageOverlay(url, [[500 * y, 500 * x], [500 * (y + 1), 500 * (x + 1)]]).addTo(map);
     }
-
-    function putMapImages(yRange, xRange, map) {
-      for (let i = yRange[0]; i <= yRange[1]; i++) {
-        for (let j = xRange[0]; j <= xRange[1]; j++) {
-          _putMap(i, j, map);
-        }
-      }
+    function putMapImages(map) {
+      MAPNUMLIST.forEach(element => {
+        _putMap(element[0], element[1], map)
+      });
     }
 
     // マップタイルの配置
-    putMapImages([-1, 3], [-3, 2], map);
-    putMapImages([1, 2], [-7, -2], map);
+    putMapImages(map);
 
     // マップの表示範囲
     var bounds = [[-500, -500 * 2], [500 * 3, 500 * 3]]; // 全体をカバーするサイズ
@@ -676,7 +671,16 @@ tileObserver.observe(document.body, {
         image: "images/akami_house.jpeg"
       },
       map
-    )
+    );
+    putMarker(
+      600, 1200,
+      {
+        title: "ハムナプトラ2 黄金のピラミッド",
+        explane: "制作者: ハンもザ",
+        image: "images/piramiddo.jpeg"
+      },
+      map
+    );
 
     // 線路用のレイヤーグループを作る
     var railwayLayer = L.layerGroup([]);
@@ -796,180 +800,40 @@ tileObserver.observe(document.body, {
       '#ffaa00'
     );
 
-    var point1 = [170, 473];
-    var myIcon1 = L.divIcon({ className: 'icon1', iconAnchor: [13, 13] });
-    L.marker(point1, { icon: myIcon1 }).addTo(railwayLayer)
-    L.tooltip({
-      permanent: true,
-      direction: 'right', // 右側に表示
-      className: 'station-label',
-      offset: [10, 0]
-    })
-      .setContent('マセイモ駅')
-      .setLatLng(point1)
-      .addTo(railwayLayer);
+    function drawStation(point, name, cssClass, railwayLayer) {
+      var myIcon = L.divIcon({ className: cssClass, iconAnchor: [13, 13] });
+      L.marker(point, { icon: myIcon }).addTo(railwayLayer)
+      L.tooltip({
+        permanent: true,
+        direction: 'right', // 右側に表示
+        className: 'station-label',
+        offset: [10, 0]
+      })
+        .setContent(name)
+        .setLatLng(point)
+        .addTo(railwayLayer);
+    }
 
-    var point1_1 = [105, 175];
-    L.marker(point1_1, { icon: myIcon1 }).addTo(railwayLayer)
-    L.tooltip({
-      permanent: true,
-      direction: 'right', // 右側に表示
-      className: 'station-label',
-      offset: [10, 0]
-    })
-      .setContent('ポテトぺす駅')
-      .setLatLng(point1_1)
-      .addTo(railwayLayer);
+    drawStation([170, 473], 'マセイモ駅', 'icon1', railwayLayer);
+    drawStation([105, 175], 'ポテトぺす駅', 'icon1', railwayLayer);
+    drawStation([-300, 190], 'ナスランド駅', 'icon1', railwayLayer);
 
-    var point1_2 = [-300, 190];
-    L.marker(point1_2, { icon: myIcon1 }).addTo(railwayLayer)
-    L.tooltip({
-      permanent: true,
-      direction: 'right', // 右側に表示
-      className: 'station-label',
-      offset: [10, 0]
-    })
-      .setContent('ナスランド駅')
-      .setLatLng(point1_2)
-      .addTo(railwayLayer);
+    drawStation([80, -550], 'コロッセオ駅', 'icon2', railwayLayer);
 
-    var point2 = [80, -550];
-    var myIcon2 = L.divIcon({ className: 'icon2', iconAnchor: [13, 13] });
-    L.marker(point2, { icon: myIcon2 }).addTo(railwayLayer)
-    L.tooltip({
-      permanent: true,
-      direction: 'right', // 右側に表示
-      className: 'station-label',
-      offset: [10, 0]
-    })
-      .setContent('コロッセオ駅')
-      .setLatLng(point2)
-      .addTo(railwayLayer);
+    drawStation([105, 100], 'ぺす像前駅', 'icon3', railwayLayer);
+    drawStation([260, 150], 'ぺす公園駅', 'icon3', railwayLayer);
 
-    var point3 = [105, 100];
-    var myIcon3 = L.divIcon({ className: 'icon3', iconAnchor: [13, 13] });
-    L.marker(point3, { icon: myIcon3 }).addTo(railwayLayer)
-    L.tooltip({
-      permanent: true,
-      direction: 'right', // 右側に表示
-      className: 'station-label',
-      offset: [10, 0]
-    })
-      .setContent('ぺす像前駅')
-      .setLatLng(point3)
-      .addTo(railwayLayer);
+    drawStation([675, 50], '中央駅', 'icon4', railwayLayer);
+    drawStation([1050, -2780], '初期スポーン駅', 'icon4', railwayLayer);
 
-    var point3_2 = [260, 150];
-    L.marker(point3_2, { icon: myIcon3 }).addTo(railwayLayer)
-    L.tooltip({
-      permanent: true,
-      direction: 'right', // 右側に表示
-      className: 'station-label',
-      offset: [10, 0]
-    })
-      .setContent('ぺす公園駅')
-      .setLatLng(point3_2)
-      .addTo(railwayLayer);
+    drawStation([675, 290], 'デンチョス駅', 'icon5', railwayLayer);
+    drawStation([530, 640], '切り替え', 'icon5', railwayLayer);
+    drawStation([530, 845], '切り替え', 'icon5', railwayLayer);
+    drawStation([370, 1141], 'デンチョス城駅', 'icon5', railwayLayer);
 
-    var point4 = [675, 50];
-    var myIcon4 = L.divIcon({ className: 'icon4', iconAnchor: [13, 13] });
-    L.marker(point4, { icon: myIcon4 }).addTo(railwayLayer)
-    L.tooltip({
-      permanent: true,
-      direction: 'right', // 右側に表示
-      className: 'station-label',
-      offset: [10, 0]
-    })
-      .setContent('中央駅')
-      .setLatLng(point4)
-      .addTo(railwayLayer);
+    drawStation([942, 750], '拠点前駅', 'icon6', railwayLayer);
 
-    var point4_1 = [1050, -2780];
-    L.marker(point4_1, { icon: myIcon4 }).addTo(railwayLayer)
-    L.tooltip({
-      permanent: true,
-      direction: 'right', // 右側に表示
-      className: 'station-label',
-      offset: [10, 0]
-    })
-      .setContent('初期スポーン駅')
-      .setLatLng(point4_1)
-      .addTo(railwayLayer);
-
-    var point5 = [675, 290];
-    var myIcon5 = L.divIcon({ className: 'icon5', iconAnchor: [13, 13] });
-    L.marker(point5, { icon: myIcon5 }).addTo(railwayLayer)
-    L.tooltip({
-      permanent: true,
-      direction: 'right', // 右側に表示
-      className: 'station-label',
-      offset: [10, 0]
-    })
-      .setContent('デンチョス駅')
-      .setLatLng(point5)
-      .addTo(railwayLayer);
-
-    var point5_2 = [530, 640];
-    L.marker(point5_2, { icon: myIcon5 }).addTo(railwayLayer)
-    L.tooltip({
-      permanent: true,
-      direction: 'right', // 右側に表示
-      className: 'station-label',
-      offset: [10, 0]
-    })
-      .setContent('切り替え')
-      .setLatLng(point5_2)
-      .addTo(railwayLayer);
-
-    var point5_4 = [530, 845];
-    L.marker(point5_4, { icon: myIcon5 }).addTo(railwayLayer)
-    L.tooltip({
-      permanent: true,
-      direction: 'right', // 右側に表示
-      className: 'station-label',
-      offset: [10, 0]
-    })
-      .setContent('切り替え')
-      .setLatLng(point5_4)
-      .addTo(railwayLayer);
-
-    var point5_3 = [370, 1141];
-    L.marker(point5_3, { icon: myIcon5 }).addTo(railwayLayer)
-    L.tooltip({
-      permanent: true,
-      direction: 'right', // 右側に表示
-      className: 'station-label',
-      offset: [10, 0]
-    })
-      .setContent('デンチョス城駅')
-      .setLatLng(point5_3)
-      .addTo(railwayLayer);
-
-    var point6 = [942, 750];
-    var myIcon6 = L.divIcon({ className: 'icon6', iconAnchor: [13, 13] });
-    L.marker(point6, { icon: myIcon6 }).addTo(railwayLayer)
-    L.tooltip({
-      permanent: true,
-      direction: 'right', // 右側に表示
-      className: 'station-label',
-      offset: [10, 0]
-    })
-      .setContent('拠点前駅')
-      .setLatLng(point6)
-      .addTo(railwayLayer);
-
-    var point7 = [290, 1290];
-    var myIcon7 = L.divIcon({ className: 'icon7', iconAnchor: [13, 13] });
-    L.marker(point7, { icon: myIcon7 }).addTo(railwayLayer)
-    L.tooltip({
-      permanent: true,
-      direction: 'right', // 右側に表示
-      className: 'station-label',
-      offset: [10, 0]
-    })
-      .setContent('アウターヘブン駅')
-      .setLatLng(point7)
-      .addTo(railwayLayer);
+    drawStation([290, 1290], 'アウターヘブン駅', 'icon7', railwayLayer);
 
     railwayLayer.addTo(map)
   </script>
@@ -1043,7 +907,8 @@ tileObserver.observe(document.body, {
     }
 
     .leaflet-image-layer {
-      image-rendering: pixelated;      /* 一番効果が高い */
+      image-rendering: pixelated;
+      /* 一番効果が高い */
       image-rendering: crisp-edges;
     }
   </style>
