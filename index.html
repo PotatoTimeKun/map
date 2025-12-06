@@ -49,7 +49,7 @@
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-
+    const VERSION = "?ver=1.4"
 
     // タイルのサイズを監視して安全に +1px する
     function watchTileSize(tile) {
@@ -115,9 +115,8 @@
       minZoom: -1
     });
 
-    const VERSION = "?ver=1.3"
     const MAPNUMLIST = [
-      [-1, -2], [-1, -1], [-1, 0], [-1, 1], [-1, 2],
+      [-1, -2], [-1, -1], [-1, 0], [-1, 1], [-1, 2],[-1,3],
       [0, -2], [0, -1], [0, 0], [0, 1], [0, 2],[0, 3],
       [1, -7], [1, -6], [1, -5], [1, -4], [1, -3], [1, -2], [1, -1], [1, 0], [1, 1], [1, 2], [1, 3],
       [2, -6], [2, 0], [2, 1],
@@ -700,11 +699,47 @@
       map
     );
     putMarker(
-      470, 1420,
+      470, 1450,
       {
-        title: "あかみジェットコースター",
+        title: "あかみサンダーマウンテン",
         explane: "座標: 1681 72 716\n制作者: あかみ",
         image: "images/akamijet.png"
+      },
+      map
+    );
+    putMarker(
+      710, 1320,
+      {
+        title: "めい城(仮名称)",
+        explane: "制作者: めい",
+        image: "images/mei_castle.jpeg"
+      },
+      map
+    );
+    putMarker(
+      800, 1450,
+      {
+        title: "金玉",
+        explane: "制作者不明",
+        image: "images/kintama.jpeg"
+      },
+      map
+    );
+    putMarker(
+      400, 1230,
+      {
+        title: "えびちゃんやっほ～",
+        explane: "制作者: ドグワン",
+        image: "images/ebi.jpeg"
+      },
+      map
+    );
+    putMarker(
+      -310, 1900,
+      {
+        title: "白",
+        explane: "制作者不明",
+        image: "images/shiro.jpeg"
       },
       map
     );
