@@ -49,7 +49,7 @@
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    const VERSION = "?ver=1.4"
+    const VERSION = "?ver=1.5"
 
     // タイルのサイズを監視して安全に +1px する
     function watchTileSize(tile) {
@@ -119,7 +119,7 @@
       [-1, -2], [-1, -1], [-1, 0], [-1, 1], [-1, 2],[-1,3],
       [0, -2], [0, -1], [0, 0], [0, 1], [0, 2],[0, 3],
       [1, -7], [1, -6], [1, -5], [1, -4], [1, -3], [1, -2], [1, -1], [1, 0], [1, 1], [1, 2], [1, 3],
-      [2, -6], [2, 0], [2, 1],
+      [2, -6], [2, 0], [2, 1],[2,3],
       [3, -1], [3, 0]
     ]
     function _putMap(y, x, map) {
@@ -682,7 +682,7 @@
     putMarker(
       700, 1180,
       {
-        title: "ハムナプトラ2 黄金のピラミッド",
+        title: "ハンもザハウス",
         explane: "制作者: ハンもザ",
         image: "images/piramiddo.jpeg"
       },
@@ -707,7 +707,7 @@
       map
     );
     putMarker(
-      470, 1450,
+      470, 1420,
       {
         title: "あかみサンダーマウンテン",
         explane: "座標: 1681 72 716\n制作者: あかみ",
@@ -748,6 +748,87 @@
         title: "おしろ",
         explane: "制作者 : 月玉",
         image: "images/shiro.jpeg"
+      },
+      map
+    );
+    putMarker(
+      500, 950,
+      {
+        title: "マセイモ地蔵、仏像、KIURI像",
+        explane: "制作者 : ドグワン",
+        image: "images/jizou.jpeg"
+      },
+      map
+    );
+    putMarker(
+      450, 1000,
+      {
+        title: "銅閣寺",
+        explane: "制作者 : ドグワン(予想)",
+        image: "images/doukaku.jpeg"
+      },
+      map
+    );
+    putMarker(
+      1070, 1640,
+      {
+        title: "エロマンガ島",
+        explane: "制作者 : ハンもザ(予想)",
+        image: "images/manga.jpeg"
+      },
+      map
+    );
+    putMarker(
+      1400, 1620,
+      {
+        title: "回転寿司にしようと思い建てたは良いけど失敗したのであえなく村人を流すだけのクソ施設になりました無念",
+        explane: "制作者不明",
+        image: "images/kaiten.jpeg"
+      },
+      map
+    );
+    putMarker(
+      450, 1730,
+      {
+        title: "あかみクラブ",
+        explane: "制作者 : あかみ",
+        image: "images/akamikurabu.jpeg"
+      },
+      map
+    );
+    putMarker(
+      480, 1470,
+      {
+        title: "なにか",
+        explane: "制作者 : あかみ(予想)",
+        image: "images/nanika.jpeg"
+      },
+      map
+    );
+    putMarker(
+      520, 1470,
+      {
+        title: "建設中の迷路っぽいもの",
+        explane: "制作者 : あかみ(予想)",
+        image: "images/maze.jpeg"
+      },
+      map
+    );
+    putMarker(
+      370, 1280,
+      {
+        title: "パンプ金太郎",
+        explane: "制作者 : ドグワン",
+        image: "images/panpu.jpeg"
+      },
+      map
+    );
+    putMarker(
+      -100, -380,
+      {
+        title: "忍者屋敷(建築中)",
+        explane: "制作者 : 塩ポテト君",
+        image: "images/ninja.jpeg"
       },
       map
     );
@@ -862,12 +943,30 @@
         [450, 1150],
         [450, 1210],
         [375, 1210],
-        [375, 1265],
-        [290, 1265],
-        [290, 1290]
+        [375, 1300]
       ],
       'ドグワン線',
       '#ffaa00'
+    );
+
+    drawRailway(
+      [
+        [490, 1200],
+        [490, 1285],
+        [375, 1285]
+      ],
+      'あかみ線',
+      '#ff0000'
+    );
+
+    drawRailway(
+      [
+        [540, 850],
+        [540, 1040],
+        [660, 1040]
+      ],
+      'ハンもザ線',
+      '#00ff00'
     );
 
     function drawStation(point, name, cssClass, railwayLayer) {
@@ -903,7 +1002,9 @@
 
     drawStation([942, 750], '拠点前駅', 'icon6', railwayLayer);
 
-    drawStation([290, 1290], 'アウターヘブン駅', 'icon7', railwayLayer);
+    drawStation([375, 1300], 'アウターヘブン駅', 'icon7', railwayLayer);
+
+    drawStation([660, 1040], "ハンモザ駅","icon8",railwayLayer);
 
     railwayLayer.addTo(map)
   </script>
@@ -974,6 +1075,14 @@
       border: 3px solid #fdfdfd;
       box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
       background-color: rgb(255, 174, 0);
+    }
+    .icon8 {
+      width: 20px !important;
+      height: 20px !important;
+      border-radius: 10px;
+      border: 3px solid #fdfdfd;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+      background-color: rgb(0, 255, 0);
     }
 
     .leaflet-image-layer {
