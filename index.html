@@ -49,7 +49,8 @@
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    const VERSION = "?ver=1.5"
+    // 画像のキャッシュ対策のため更新時にバージョンアップ
+    const VERSION = "?ver=1.6"
 
     // タイルのサイズを監視して安全に +1px する
     function watchTileSize(tile) {
@@ -826,9 +827,18 @@
     putMarker(
       -100, -380,
       {
-        title: "忍者屋敷(建築中)",
+        title: "忍者屋敷 ～芋からの挑戦状～",
         explane: "制作者 : 塩ポテト君",
         image: "images/ninja.jpeg"
+      },
+      map
+    );
+    putMarker(
+      -20, -80,
+      {
+        title: "マセイモを持ち上げる塩ポテト像",
+        explane: "制作者 : 塩ポテト君",
+        image: "images/potato_imo_statue.jpeg"
       },
       map
     );
