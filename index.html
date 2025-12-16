@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
     #map {
-      height: 100vh;
+      height: 90vh;
     }
   </style>
   <link rel="icon" href="fav.png" type="image/png">
@@ -16,6 +16,9 @@
 
 <body>
   <button id="toggleRailway">線路の表示/非表示</button>
+
+  <input type="text" id="markerSearch" placeholder="建物名・地域名を検索" />
+  <ul id="searchResults"></ul>
 
   <script>
     // 表示状態を覚えておく
@@ -30,6 +33,37 @@
       railwayVisible = !railwayVisible; // 状態を反転させる
     });
 
+    const input = document.getElementById("markerSearch");
+    const results = document.getElementById("searchResults");
+
+    input.addEventListener("input", () => {
+      const keyword = input.value.trim();
+      results.innerHTML = "";
+
+      if (keyword === "") return;
+
+      markers
+        .filter(m =>
+          m.title.toLowerCase().includes(keyword.toLowerCase())
+        )
+        .forEach(m => {
+          const li = document.createElement("li");
+          li.textContent = m.title;
+
+          li.addEventListener("click", () => {
+            console.log(m);
+            map.flyTo(m.latlng, map.getZoom(), {
+              animate: true
+            });
+            m.marker.openPopup();
+            results.innerHTML = "";
+            input.value = "";
+          });
+
+          results.appendChild(li);
+        });
+    });
+
   </script>
 
   <style>
@@ -40,8 +74,51 @@
     #toggleRailway {
       position: absolute;
       z-index: 1000;
-      top: 10px;
-      left: 60px;
+      bottom: 10px;
+      left: 5px;
+      display: inline-block;
+      padding: 0.5em 1em;
+      text-decoration: none;
+      background: #f7f7f7;
+      border: 0px;
+      border-left: solid 6px #ff7c5c;
+      /*左線*/
+      color: #ff7c5c;
+      /*文字色*/
+      font-weight: bold;
+      box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
+    }
+
+    #toggleRailway:active {
+      box-shadow: inset 0 0 2px rgba(128, 128, 128, 0.1);
+      transform: translateY(2px);
+    }
+
+    #markerSearch {
+      width: 90vw;
+      padding: 6px;
+      margin: 6px;
+    }
+
+    #searchResults {
+      position:absolute;
+      z-index: 10000;
+      list-style: none;
+      margin: 4px 0 0;
+      padding: 0;
+      background: white;
+      border: 1px solid #ccc;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    #searchResults li {
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+
+    #searchResults li:hover {
+      background: #eee;
     }
   </style>
 
@@ -50,7 +127,7 @@
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
     // 画像のキャッシュ対策のため更新時にバージョンアップ
-    const VERSION = "?ver=1.6"
+    const VERSION = "?ver=2.0"
 
     // タイルのサイズを監視して安全に +1px する
     function watchTileSize(tile) {
@@ -117,10 +194,10 @@
     });
 
     const MAPNUMLIST = [
-      [-1, -2], [-1, -1], [-1, 0], [-1, 1], [-1, 2],[-1,3],
-      [0, -2], [0, -1], [0, 0], [0, 1], [0, 2],[0, 3],
+      [-1, -2], [-1, -1], [-1, 0], [-1, 1], [-1, 2], [-1, 3],
+      [0, -2], [0, -1], [0, 0], [0, 1], [0, 2], [0, 3],
       [1, -7], [1, -6], [1, -5], [1, -4], [1, -3], [1, -2], [1, -1], [1, 0], [1, 1], [1, 2], [1, 3],
-      [2, -6], [2, 0], [2, 1],[2,3],
+      [2, -6], [2, 0], [2, 1], [2, 3],
       [3, -1], [3, 0]
     ]
     function _putMap(y, x, map) {
@@ -145,703 +222,628 @@
       if (data.title != undefined) markerHTML += `<h2>${data.title}</h2>`
       if (data.explane != undefined) markerHTML += `<p>${data.explane.replaceAll("\n", "<br>")}</p>`
       if (data.image != undefined) markerHTML += `<img style="width: 300px;" src="${data.image}?ver=${VERSION}">`
-      L.marker([y, x]).addTo(map)
+      return L.marker([y, x]).addTo(map)
         .bindPopup(markerHTML);
     }
 
     // 地点マーカーを置く
-    putMarker(
-      90, 490,
-      {
-        title: "マセイモ島",
-        explane: "座標: 1220 72 900\n居住者: 塩ポテト君",
-        image: "images/maseimo_island.png"
-      },
-      map
-    );
-    putMarker(
-      300, 780,
-      {
-        title: "すしすきー大学",
-        explane: "座標: 1360 70 750\n制作者: 塩ポテト君",
-        image: "images/sushi_uni.png"
-      },
-      map
-    );
-    putMarker(
-      250, 1140,
-      {
-        title: "デンチョス城",
-        explane: "座標: 1545 65 775<br>制作者: 光奏",
-        image: "images/chos_castle.png"
-      },
-      map
-    );
-    putMarker(
-      -100, 1140,
-      {
-        title: "建設中？",
-        explane: "座標: 1550 231 950\n制作者: 光奏",
-        image: "images/denchos_kuchu.jpeg"
-      },
-      map
-    );
-    putMarker(
-      -300, 790,
-      {
-        title: "BIG KUCHIBASHI",
-        explane: "座標: 1370 62 1114\n制作者: 光奏",
-        image: "images/water_kuchibashi.png"
-      },
-      map
-    );
-    putMarker(
-      730, 650,
-      {
-        title: "競馬場予定地",
-        explane: "建設中\n座標: 1300 70 600\n制作者: チャル建設"
-      },
-      map
-    );
-    putMarker(
-      865, 765,
-      {
-        title: "整地師事務所",
-        explane: "座標: 1330 70 520\n制作者: 久月",
-        image: "images/seichishi.png"
-      },
-      map
-    );
-    putMarker(
-      865, 330,
-      {
-        title: "TOJI\'s HOUSE",
-        explane: "座標: 1140 64 510\n居住者: たまごとじのすけ",
-        image: "images/toji_house.png"
-      },
-      map
-    );
-    putMarker(
-      80, 20,
-      {
-        title: "ぺす像",
-        explane: "座標: 1000 71 900\n制作者: ?",
-        image: "images/pes_zou.png"
-      },
-      map
-    );
-    putMarker(
-      240, 170,
-      {
-        title: "Pes Tower",
-        explane: "座標: 1045 72 850\n制作者: ?",
-        image: "images/pes_tower.png"
-      },
-      map
-    );
-    putMarker(
-      250, 130,
-      {
-        title: "四重の塔",
-        explane: "座標: 1045 72 850\n制作者: ?",
-        image: "images/pes_tower.png"
-      },
-      map
-    );
-    putMarker(
-      270, -150,
-      {
-        title: "かじきの家",
-        explane: "座標: 882 63 809\n居住者: かじき",
-        image: "images/kajiki_house.png"
-      },
-      map
-    );
-    putMarker(
-      150, -700,
-      {
-        title: "コロッセオ",
-        explane: "座標: 660 71 880\n制作者: てくてく建設",
-        image: "images/korosu.png"
-      },
-      map
-    );
-    putMarker(
-      490, -290,
-      {
-        title: "トラップタワー&てくてく像",
-        explane: "座標: 819 73 703\n制作者: ?",
-        image: "images/tt.png"
-      },
-      map
-    );
-    putMarker(
-      710, 30,
-      {
-        title: "本拠点 本島",
-        explane: "座標: 975 79 590",
-        image: "images/base_kyoten.png"
-      },
-      map
-    );
-    putMarker(
-      750, 50,
-      {
-        title: "成人男性ハウス",
-        explane: "座標: 993 79 580\n制作者: コヤマ",
-        image: "images/seijindansei.png"
-      },
-      map
-    );
-    putMarker(
-      770, -35,
-      {
-        title: "いじぇハウス",
-        explane: "座標: 944 75 571\n居住者: いじぇん",
-        image: "images/ije_house.png"
-      },
-      map
-    );
-    putMarker(
-      730, 200,
-      {
-        title: "しなりハウス",
-        explane: "座標: 1046 87 584\n居住者: しなり",
-        image: "images/shinari_house.png"
-      },
-      map
-    );
-    putMarker(
-      760, 180,
-      {
-        title: "タマナシ地下迷宮",
-        explane: "座標: 1048 87 578\n制作者: タマナシ",
-        image: "images/tama_chika.png"
-      },
-      map
-    );
-    putMarker(
-      760, 260,
-      {
-        title: "むのむのおうち",
-        explane: "座標: 1081 83 581\n居住者: むのむ",
-        image: "images/mnm_house.png"
-      },
-      map
-    );
-    putMarker(
-      700, 310,
-      {
-        title: "あてむ ず はうす （笑）",
-        explane: "座標: 1113 86 598\n居住者: あてむ",
-        image: "images/atm_house.png"
-      },
-      map
-    );
-    putMarker(
-      650, 293,
-      {
-        title: "デンチョスのお家",
-        explane: "座標: 1110 87 611\n居住者: 光奏",
-        image: "images/chos_house.png"
-      },
-      map
-    );
-    putMarker(
-      590, 293,
-      {
-        title: "デンチョス港",
-        explane: "座標: 1108 64 656\n居住者: 光奏"
-      },
-      map
-    );
-    putMarker(
-      720, 100,
-      {
-        title: "移転の館",
-        explane: "座標: 1010 79 587",
-        image: "images/iten.png"
-      },
-      map
-    );
-    putMarker(
-      790, 110,
-      {
-        title: "殺し愛の間",
-        explane: "座標: 1002 95 550\n制作者: ?",
-        image: "images/koroshi.png"
-      },
-      map
-    );
-    putMarker(
-      620, 110,
-      {
-        title: "旧デンチョスの家 東屋",
-        explane: "座標: 1004 72 636\n制作者: デンチョス",
-        image: "images/old_chos.png"
-      },
-      map
-    );
-    putMarker(
-      820, -540,
-      {
-        title: "タマナシ城塞",
-        explane: "座標: 689 67 552\n制作者: タマナシ",
-        image: "images/tama_house.png"
-      },
-      map
-    );
-    putMarker(
-      775, -510,
-      {
-        title: "タマナシ港",
-        explane: "座標: 689 67 552\n制作者: タマナシ"
-      },
-      map
-    );
-    putMarker(
-      640, -770,
-      {
-        title: "しなり城",
-        explane: "座標: 611 68 604\n制作者: しなり",
-        image: "images/shinari_castle.png"
-      },
-      map
-    );
-    putMarker(
-      1750, 100,
-      {
-        title: "北島・コマンドアイランド",
-        explane: "座標: 996 82 38",
-        image: "images/kita_island.png"
-      },
-      map
-    );
-    putMarker(
-      170, 240,
-      {
-        title: "アパート ポテトライフ",
-        explane: "座標: 1084 72 847\n制作者: 塩ポテト君\n居住者: 塩ポテト君",
-        image: "images/potatolife.png"
-      },
-      map
-    );
-    putMarker(
-      310, 410,
-      {
-        title: "イモ クルーズ",
-        explane: "座標: 1175 65 788\n制作者: 塩ポテト君",
-        image: "images/imoship.png"
-      },
-      map
-    );
-    putMarker(
-      200, 330,
-      {
-        title: "レストラン Nyap",
-        explane: "座標: 1120 72 848\n制作者: 塩ポテト君",
-        image: "images/nyap.png"
-      },
-      map
-    );
-    putMarker(
-      -70, 420,
-      {
-        title: "豆腐建築",
-        explane: "座標: 1179 65 969\n制作者: 塩ポテト君",
-        image: "images/tofu.png"
-      },
-      map
-    );
-    putMarker(
-      310, 510,
-      {
-        title: "マセイモ港",
-        explane: "座標: 1220 64 801\n制作者: 塩ポテト君"
-      },
-      map
-    );
-    putMarker(
-      110, 510,
-      {
-        title: "ハートの桜と空中じゃがいも畑",
-        explane: "座標: 1220 72 873\n制作者: 塩ポテト君",
-        image: "images/imosakura.png"
-      },
-      map
-    );
-    putMarker(
-      220, 510,
-      {
-        title: "マセイモ像",
-        explane: "座標: 1233 72 818\n制作者: 塩ポテト君",
-        image: "images/imo_statue.png"
-      },
-      map
-    );
-    putMarker(
-      8, 475,
-      {
-        title: "罪を償うナス像",
-        explane: "制作者: 塩ポテト君"
-      },
-      map
-    );
-    putMarker(
-      100, 430,
-      {
-        title: "吊るされるナス像",
-        explane: "制作者: 塩ポテト君"
-      },
-      map
-    );
-    putMarker(
-      140, 445,
-      {
-        title: "マセイモ交番",
-        explane: "制作者: 塩ポテト君"
-      },
-      map
-    );
-    putMarker(
-      -40, 540,
-      {
-        title: "マセイモ弓道場",
-        explane: "座標: 1236 72 938\n制作者: 塩ポテト君",
-        image: "images/imo_kyudo.png"
-      },
-      map
-    );
-    putMarker(
-      10, 400,
-      {
-        title: "全自動パンプキンパイ工場",
-        explane: "座標: 1161 72 940\n制作者: 塩ポテト君",
-        image: "images/kabocha.png"
-      },
-      map
-    );
-    putMarker(
-      120, 580,
-      {
-        title: "ジェットコースター乗り場",
-        explane: "制作者: 塩ポテト君"
-      },
-      map
-    );
-    putMarker(
-      250, 565,
-      {
-        title: "日付カウントアップ回路",
-        explane: "制作者: 塩ポテト君",
-        image: "images/count.png"
-      },
-      map
-    );
-    putMarker(
-      260, 550,
-      {
-        title: "日付カウントアップ回路見学路",
-        explane: "制作者: 塩ポテト君",
-        image: "images/count2.png"
-      },
-      map
-    );
-    putMarker(
-      260, 490,
-      {
-        title: "マセイモ島案内図",
-        explane: "制作者: 塩ポテト君"
-      },
-      map
-    );
-    putMarker(
-      80, 300,
-      {
-        title: "ポテト港-イモガンダム前",
-        explane: "座標: 1108 65 908\n制作者: 塩ポテト君",
-        image: "images/imoshipsakura.png"
-      },
-      map
-    );
-    putMarker(
-      140, 320,
-      {
-        title: "イモガンダム",
-        explane: "座標: 1123 65 892\n制作者: 塩ポテト君",
-        image: "images/imogandam.png"
-      },
-      map
-    );
-    putMarker(
-      230, 270,
-      {
-        title: "ナス公園（笑）",
-        explane: "制作者: 塩ポテト君",
-        image: "images/nasupark.png"
-      },
-      map
-    );
-    putMarker(
-      60, 110,
-      {
-        title: "とじのすけ像",
-        explane: "制作者: 塩ポテト君",
-        image: "images/tojinosuke.jpeg"
-      },
-      map
-    );
-    putMarker(
-      90, 200,
-      {
-        title: "溶岩にゃぷ",
-        explane: "制作者: 塩ポテト君",
-        image: "images/lavanyap.jpeg"
-      },
-      map
-    );
-    putMarker(
-      70, 200,
-      {
-        title: "のぞき穴",
-        explane: "制作者: 塩ポテト君"
-      },
-      map
-    );
-    putMarker(
-      -400, 200,
-      {
-        title: "ナスランド",
-        explane: "制作者: 塩ポテト君",
-        image: "images/nasuland.jpeg"
-      },
-      map
-    );
-    putMarker(
-      250, 1350,
-      {
-        title: "武装要塞国家アウターヘブン",
-        explane: "座標: 1633 63 766\n制作者: ドグワン",
-        image: "images/dogwan_village.jpeg"
-      },
-      map
-    );
-    putMarker(
-      1050, 810,
-      {
-        title: "金うんち神社",
-        explane: "座標: 1363 70 420\n制作者: しなり？",
-        image: "images/gold_unchi.jpeg"
-      },
-      map
-    );
-    putMarker(
-      1200, 390,
-      {
-        title: "海上都市 芋ータル(建設中)",
-        explane: "座標: 1161 65 346\n制作者: 塩ポテト君",
-        image: "images/imo_taru.jpeg"
-      },
-      map
-    );
-    putMarker(
-      1000, -2800,
-      {
-        title: "タマナシのやらかし見学ロード",
-        explane: "座標: -479 72 427\nやらかし者: タマナシ",
-        image: "images/tamanashi_tnt.jpeg"
-      },
-      map
-    );
-    putMarker(
-      600, -3200,
-      {
-        title: "月玉農場",
-        explane: "座標: -681 63 645\n制作者: 月玉",
-        image: "images/tsukitama_house.jpeg"
-      },
-      map
-    );
-    putMarker(
-      400, 300,
-      {
-        title: "マセイモ航空 MASE-300YEN",
-        explane: "制作者: 塩ポテト君",
-        image: "images/imo_airplane.jpeg"
-      },
-      map
-    );
-    putMarker(
-      520, 1210,
-      {
-        title: "あかみハウス",
-        explane: "座標: 1569 70 701\n制作者: あかみ",
-        image: "images/akami_house.jpeg"
-      },
-      map
-    );
-    putMarker(
-      700, 1180,
-      {
-        title: "ハンもザハウス",
-        explane: "制作者: ハンもザ",
-        image: "images/piramiddo.jpeg"
-      },
-      map
-    );
-    putMarker(
-      630, 1400,
-      {
-        title: "月と玉",
-        explane: "制作者: 月玉",
-        image: "images/tsukitama.jpeg"
-      },
-      map
-    );
-    putMarker(
-      630, 1010,
-      {
-        title: "刃牙の家",
-        explane: "制作者: ハンもザ？(不明)",
-        image: "images/baki.jpeg"
-      },
-      map
-    );
-    putMarker(
-      470, 1420,
-      {
-        title: "あかみサンダーマウンテン",
-        explane: "座標: 1681 72 716\n制作者: あかみ",
-        image: "images/akamijet.png"
-      },
-      map
-    );
-    putMarker(
-      710, 1320,
-      {
-        title: "めい城(仮名称)",
-        explane: "制作者: めい",
-        image: "images/mei_castle.jpeg"
-      },
-      map
-    );
-    putMarker(
-      800, 1450,
-      {
-        title: "金玉",
-        explane: "制作者不明",
-        image: "images/kintama.jpeg"
-      },
-      map
-    );
-    putMarker(
-      400, 1230,
-      {
-        title: "えびちゃんやっほ～",
-        explane: "制作者: ドグワン",
-        image: "images/ebi.jpeg"
-      },
-      map
-    );
-    putMarker(
-      -310, 1900,
-      {
-        title: "おしろ",
-        explane: "制作者 : 月玉",
-        image: "images/shiro.jpeg"
-      },
-      map
-    );
-    putMarker(
-      500, 950,
-      {
-        title: "マセイモ地蔵、仏像、KIURI像",
-        explane: "制作者 : ドグワン",
-        image: "images/jizou.jpeg"
-      },
-      map
-    );
-    putMarker(
-      450, 1000,
-      {
-        title: "銅閣寺",
-        explane: "制作者 : ドグワン(予想)",
-        image: "images/doukaku.jpeg"
-      },
-      map
-    );
-    putMarker(
-      1070, 1640,
-      {
-        title: "エロマンガ島",
-        explane: "制作者 : ハンもザ(予想)",
-        image: "images/manga.jpeg"
-      },
-      map
-    );
-    putMarker(
-      1400, 1620,
-      {
-        title: "回転寿司にしようと思い建てたは良いけど失敗したのであえなく村人を流すだけのクソ施設になりました無念",
-        explane: "制作者不明",
-        image: "images/kaiten.jpeg"
-      },
-      map
-    );
-    putMarker(
-      450, 1730,
-      {
-        title: "あかみクラブ",
-        explane: "制作者 : あかみ",
-        image: "images/akamikurabu.jpeg"
-      },
-      map
-    );
-    putMarker(
-      480, 1470,
-      {
-        title: "なにか",
-        explane: "制作者 : あかみ(予想)",
-        image: "images/nanika.jpeg"
-      },
-      map
-    );
-    putMarker(
-      520, 1470,
-      {
-        title: "建設中の迷路っぽいもの",
-        explane: "制作者 : あかみ(予想)",
-        image: "images/maze.jpeg"
-      },
-      map
-    );
-    putMarker(
-      370, 1280,
-      {
-        title: "パンプ金太郎",
-        explane: "制作者 : ドグワン",
-        image: "images/panpu.jpeg"
-      },
-      map
-    );
-    putMarker(
-      -100, -380,
-      {
-        title: "忍者屋敷 ～芋からの挑戦状～",
-        explane: "制作者 : 塩ポテト君",
-        image: "images/ninja.jpeg"
-      },
-      map
-    );
-    putMarker(
-      -20, -80,
-      {
-        title: "マセイモを持ち上げる塩ポテト像",
-        explane: "制作者 : 塩ポテト君",
-        image: "images/potato_imo_statue.jpeg"
-      },
-      map
-    );
+    const markersData = [
+      {
+        latlng: [90, 490],
+        data: {
+          title: "マセイモ島",
+          explane: "座標: 1220 72 900\n居住者: 塩ポテト君",
+          image: "images/maseimo_island.png"
+        }
+      },
+      {
+        latlng: [300, 780],
+        data: {
+          title: "すしすきー大学",
+          explane: "座標: 1360 70 750\n制作者: 塩ポテト君",
+          image: "images/sushi_uni.png"
+        }
+      },
+      {
+        latlng: [-100, 1140],
+        data: {
+          title: "建設中？",
+          explane: "座標: 1550 231 950\n制作者: 光奏",
+          image: "images/denchos_kuchu.jpeg"
+        }
+      },
+      {
+        latlng: [-300, 790],
+        data: {
+          title: "BIG KUCHIBASHI",
+          explane: "座標: 1370 62 1114\n制作者: 光奏",
+          image: "images/water_kuchibashi.png"
+        }
+      },
+      {
+        latlng: [730, 650],
+        data: {
+          title: "競馬場予定地",
+          explane: "建設中\n座標: 1300 70 600\n制作者: チャル建設"
+        }
+      },
+      {
+        latlng: [865, 765],
+        data: {
+          title: "整地師事務所",
+          explane: "座標: 1330 70 520\n制作者: 久月",
+          image: "images/seichishi.png"
+        }
+      },
+      {
+        latlng: [865, 330],
+        data: {
+          title: "TOJI\'s HOUSE",
+          explane: "座標: 1140 64 510\n居住者: たまごとじのすけ",
+          image: "images/toji_house.png"
+        }
+      },
+      {
+        latlng: [80, 20],
+        data: {
+          title: "ぺす像",
+          explane: "座標: 1000 71 900\n制作者: ?",
+          image: "images/pes_zou.png"
+        }
+      },
+      {
+        latlng: [240, 170],
+        data: {
+          title: "Pes Tower",
+          explane: "座標: 1045 72 850\n制作者: ?",
+          image: "images/pes_tower.png"
+        }
+      },
+      {
+        latlng: [250, 130],
+        data: {
+          title: "四重の塔",
+          explane: "座標: 1045 72 850\n制作者: ?",
+          image: "images/pes_tower.png"
+        }
+      },
+      {
+        latlng: [270, -150],
+        data: {
+          title: "かじきの家",
+          explane: "座標: 882 63 809\n居住者: かじき",
+          image: "images/kajiki_house.png"
+        }
+      },
+      {
+        latlng: [150, -700],
+        data: {
+          title: "コロッセオ",
+          explane: "座標: 660 71 880\n制作者: てくてく建設",
+          image: "images/korosu.png"
+        }
+      },
+      {
+        latlng: [490, -290],
+        data: {
+          title: "トラップタワー&てくてく像",
+          explane: "座標: 819 73 703\n制作者: ?",
+          image: "images/tt.png"
+        }
+      },
+      {
+        latlng: [710, 30],
+        data: {
+          title: "本拠点 本島",
+          explane: "座標: 975 79 590",
+          image: "images/base_kyoten.png"
+        }
+      },
+      {
+        latlng: [750, 50],
+        data: {
+          title: "成人男性ハウス",
+          explane: "座標: 993 79 580\n制作者: コヤマ",
+          image: "images/seijindansei.png"
+        }
+      },
+      {
+        latlng: [770, -35],
+        data: {
+          title: "いじぇハウス",
+          explane: "座標: 944 75 571\n居住者: いじぇん",
+          image: "images/ije_house.png"
+        }
+      },
+      {
+        latlng: [730, 200],
+        data: {
+          title: "しなりハウス",
+          explane: "座標: 1046 87 584\n居住者: しなり",
+          image: "images/shinari_house.png"
+        }
+      },
+      {
+        latlng: [760, 180],
+        data: {
+          title: "タマナシ地下迷宮",
+          explane: "座標: 1048 87 578\n制作者: タマナシ",
+          image: "images/tama_chika.png"
+        }
+      },
+      {
+        latlng: [760, 260],
+        data: {
+          title: "むのむのおうち",
+          explane: "座標: 1081 83 581\n居住者: むのむ",
+          image: "images/mnm_house.png"
+        }
+      },
+      {
+        latlng: [700, 310],
+        data: {
+          title: "あてむ ず はうす （笑）",
+          explane: "座標: 1113 86 598\n居住者: あてむ",
+          image: "images/atm_house.png"
+        }
+      },
+      {
+        latlng: [650, 293],
+        data: {
+          title: "デンチョスのお家",
+          explane: "座標: 1110 87 611\n居住者: 光奏",
+          image: "images/chos_house.png"
+        }
+      },
+      {
+        latlng: [590, 293],
+        data: {
+          title: "デンチョス港",
+          explane: "座標: 1108 64 656\n居住者: 光奏"
+        }
+      },
+      {
+        latlng: [720, 100],
+        data: {
+          title: "移転の館",
+          explane: "座標: 1010 79 587",
+          image: "images/iten.png"
+        }
+      },
+      {
+        latlng: [790, 110],
+        data: {
+          title: "殺し愛の間",
+          explane: "座標: 1002 95 550\n制作者: ?",
+          image: "images/koroshi.png"
+        }
+      },
+      {
+        latlng: [620, 110],
+        data: {
+          title: "旧デンチョスの家 東屋",
+          explane: "座標: 1004 72 636\n制作者: デンチョス",
+          image: "images/old_chos.png"
+        }
+      },
+      {
+        latlng: [820, -540],
+        data: {
+          title: "タマナシ城塞",
+          explane: "座標: 689 67 552\n制作者: タマナシ",
+          image: "images/tama_house.png"
+        }
+      },
+      {
+        latlng: [775, -510],
+        data: {
+          title: "タマナシ港",
+          explane: "座標: 689 67 552\n制作者: タマナシ"
+        }
+      },
+      {
+        latlng: [640, -770],
+        data: {
+          title: "しなり城",
+          explane: "座標: 611 68 604\n制作者: しなり",
+          image: "images/shinari_castle.png"
+        }
+      },
+      {
+        latlng: [1750, 100],
+        data: {
+          title: "北島・コマンドアイランド",
+          explane: "座標: 996 82 38",
+          image: "images/kita_island.png"
+        }
+      },
+      {
+        latlng: [170, 240],
+        data: {
+          title: "アパート ポテトライフ",
+          explane: "座標: 1084 72 847\n制作者: 塩ポテト君\n居住者: 塩ポテト君",
+          image: "images/potatolife.png"
+        }
+      },
+      {
+        latlng: [310, 410],
+        data: {
+          title: "イモ クルーズ",
+          explane: "座標: 1175 65 788\n制作者: 塩ポテト君",
+          image: "images/imoship.png"
+        }
+      },
+      {
+        latlng: [200, 330],
+        data: {
+          title: "レストラン Nyap",
+          explane: "座標: 1120 72 848\n制作者: 塩ポテト君",
+          image: "images/nyap.png"
+        }
+      },
+      {
+        latlng: [-70, 420],
+        data: {
+          title: "豆腐建築",
+          explane: "座標: 1179 65 969\n制作者: 塩ポテト君",
+          image: "images/tofu.png"
+        }
+      },
+      {
+        latlng: [310, 510],
+        data: {
+          title: "マセイモ港",
+          explane: "座標: 1220 64 801\n制作者: 塩ポテト君"
+        }
+      },
+      {
+        latlng: [110, 510],
+        data: {
+          title: "ハートの桜と空中じゃがいも畑",
+          explane: "座標: 1220 72 873\n制作者: 塩ポテト君",
+          image: "images/imosakura.png"
+        }
+      },
+      {
+        latlng: [220, 510],
+        data: {
+          title: "マセイモ像",
+          explane: "座標: 1233 72 818\n制作者: 塩ポテト君",
+          image: "images/imo_statue.png"
+        }
+      },
+      {
+        latlng: [8, 475],
+        data: {
+          title: "罪を償うナス像",
+          explane: "制作者: 塩ポテト君"
+        }
+      },
+      {
+        latlng: [100, 430],
+        data: {
+          title: "吊るされるナス像",
+          explane: "制作者: 塩ポテト君"
+        }
+      },
+      {
+        latlng: [140, 445],
+        data: {
+          title: "マセイモ交番",
+          explane: "制作者: 塩ポテト君"
+        }
+      },
+      {
+        latlng: [-40, 540],
+        data: {
+          title: "マセイモ弓道場",
+          explane: "座標: 1236 72 938\n制作者: 塩ポテト君",
+          image: "images/imo_kyudo.png"
+        }
+      },
+      {
+        latlng: [10, 400],
+        data: {
+          title: "全自動パンプキンパイ工場",
+          explane: "座標: 1161 72 940\n制作者: 塩ポテト君",
+          image: "images/kabocha.png"
+        }
+      },
+      {
+        latlng: [120, 580],
+        data: {
+          title: "ジェットコースター乗り場",
+          explane: "制作者: 塩ポテト君"
+        }
+      },
+      {
+        latlng: [250, 565],
+        data: {
+          title: "日付カウントアップ回路",
+          explane: "制作者: 塩ポテト君",
+          image: "images/count.png"
+        }
+      },
+      {
+        latlng: [260, 550],
+        data: {
+          title: "日付カウントアップ回路見学路",
+          explane: "制作者: 塩ポテト君",
+          image: "images/count2.png"
+        }
+      },
+      {
+        latlng: [260, 490],
+        data: {
+          title: "マセイモ島案内図",
+          explane: "制作者: 塩ポテト君"
+        }
+      },
+      {
+        latlng: [80, 300],
+        data: {
+          title: "ポテト港-イモガンダム前",
+          explane: "座標: 1108 65 908\n制作者: 塩ポテト君",
+          image: "images/imoshipsakura.png"
+        }
+      },
+      {
+        latlng: [140, 320],
+        data: {
+          title: "イモガンダム",
+          explane: "座標: 1123 65 892\n制作者: 塩ポテト君",
+          image: "images/imogandam.png"
+        }
+      },
+      {
+        latlng: [230, 270],
+        data: {
+          title: "ナス公園（笑）",
+          explane: "制作者: 塩ポテト君",
+          image: "images/nasupark.png"
+        }
+      },
+      {
+        latlng: [60, 110],
+        data: {
+          title: "とじのすけ像",
+          explane: "制作者: 塩ポテト君",
+          image: "images/tojinosuke.jpeg"
+        }
+      },
+      {
+        latlng: [90, 200],
+        data: {
+          title: "溶岩にゃぷ",
+          explane: "制作者: 塩ポテト君",
+          image: "images/lavanyap.jpeg"
+        }
+      },
+      {
+        latlng: [-400, 200],
+        data: {
+          title: "ナスランド",
+          explane: "制作者: 塩ポテト君",
+          image: "images/nasuland.jpeg"
+        }
+      },
+      {
+        latlng: [250, 1350],
+        data: {
+          title: "武装要塞国家アウターヘブン",
+          explane: "座標: 1633 63 766\n制作者: ドグワン",
+          image: "images/dogwan_village.jpeg"
+        }
+      },
+      {
+        latlng: [1050, 810],
+        data: {
+          title: "金うんち神社",
+          explane: "座標: 1363 70 420\n制作者: しなり？",
+          image: "images/gold_unchi.jpeg"
+        }
+      },
+      {
+        latlng: [1200, 390],
+        data: {
+          title: "海上都市 芋ータル(建設中)",
+          explane: "座標: 1161 65 346\n制作者: 塩ポテト君",
+          image: "images/imo_taru.jpeg"
+        }
+      },
+      {
+        latlng: [1000, -2800],
+        data: {
+          title: "タマナシのやらかし見学ロード",
+          explane: "座標: -479 72 427\nやらかし者: タマナシ",
+          image: "images/tamanashi_tnt.jpeg"
+        }
+      },
+      {
+        latlng: [600, -3200],
+        data: {
+          title: "月玉農場",
+          explane: "座標: -681 63 645\n制作者: 月玉",
+          image: "images/tsukitama_house.jpeg"
+        }
+      },
+      {
+        latlng: [400, 300],
+        data: {
+          title: "マセイモ航空 MASE-300YEN",
+          explane: "制作者: 塩ポテト君",
+          image: "images/imo_airplane.jpeg"
+        }
+      },
+      {
+        latlng: [520, 1210],
+        data: {
+          title: "あかみハウス",
+          explane: "座標: 1569 70 701\n制作者: あかみ",
+          image: "images/akami_house.jpeg"
+        }
+      },
+      {
+        latlng: [700, 1180],
+        data: {
+          title: "ハンもザハウス",
+          explane: "制作者: ハンもザ",
+          image: "images/piramiddo.jpeg"
+        }
+      },
+      {
+        latlng: [630, 1400],
+        data: {
+          title: "月と玉",
+          explane: "制作者: 月玉",
+          image: "images/tsukitama.jpeg"
+        }
+      },
+      {
+        latlng: [630, 1010],
+        data: {
+          title: "刃牙の家",
+          explane: "制作者: ハンもザ？(不明)",
+          image: "images/baki.jpeg"
+        }
+      },
+      {
+        latlng: [470, 1420],
+        data: {
+          title: "あかみサンダーマウンテン",
+          explane: "座標: 1681 72 716\n制作者: あかみ",
+          image: "images/akamijet.png"
+        }
+      },
+      {
+        latlng: [710, 1320],
+        data: {
+          title: "めい城(仮名称)",
+          explane: "制作者: めい",
+          image: "images/mei_castle.jpeg"
+        }
+      },
+      {
+        latlng: [800, 1450],
+        data: {
+          title: "金玉",
+          explane: "制作者不明",
+          image: "images/kintama.jpeg"
+        }
+      },
+      {
+        latlng: [400, 1230],
+        data: {
+          title: "えびちゃんやっほ～",
+          explane: "制作者: ドグワン",
+          image: "images/ebi.jpeg"
+        }
+      },
+      {
+        latlng: [-310, 1900],
+        data: {
+          title: "おしろ",
+          explane: "制作者 : 月玉",
+          image: "images/shiro.jpeg"
+        }
+      },
+      {
+        latlng: [500, 950],
+        data: {
+          title: "マセイモ地蔵、仏像、KIURI像",
+          explane: "制作者 : ドグワン",
+          image: "images/jizou.jpeg"
+        }
+      },
+      {
+        latlng: [450, 1000],
+        data: {
+          title: "銅閣寺",
+          explane: "制作者 : ドグワン(予想)",
+          image: "images/doukaku.jpeg"
+        }
+      },
+      {
+        latlng: [1070, 1640],
+        data: {
+          title: "エロマンガ島",
+          explane: "制作者 : ハンもザ(予想)",
+          image: "images/manga.jpeg"
+        }
+      },
+      {
+        latlng: [1400, 1620],
+        data: {
+          title: "回転寿司にしようと思い建てたは良いけど失敗したのであえなく村人を流すだけのクソ施設になりました無念",
+          explane: "制作者不明",
+          image: "images/kaiten.jpeg"
+        }
+      },
+      {
+        latlng: [450, 1730],
+        data: {
+          title: "あかみクラブ",
+          explane: "制作者 : あかみ",
+          image: "images/akamikurabu.jpeg"
+        }
+      },
+      {
+        latlng: [480, 1470],
+        data: {
+          title: "なにか",
+          explane: "制作者 : あかみ(予想)",
+          image: "images/nanika.jpeg"
+        }
+      },
+      {
+        latlng: [520, 1470],
+        data: {
+          title: "建設中の迷路っぽいもの",
+          explane: "制作者 : あかみ(予想)",
+          image: "images/maze.jpeg"
+        }
+      },
+      {
+        latlng: [370, 1280],
+        data: {
+          title: "パンプ金太郎",
+          explane: "制作者 : ドグワン",
+          image: "images/panpu.jpeg"
+        }
+      },
+      {
+        latlng: [-100, -380],
+        data: {
+          title: "忍者屋敷 ～芋からの挑戦状～",
+          explane: "制作者 : 塩ポテト君",
+          image: "images/ninja.jpeg"
+        }
+      },
+      {
+        latlng: [-20, -80],
+        data: {
+          title: "マセイモを持ち上げる塩ポテト像",
+          explane: "制作者 : 塩ポテト君",
+          image: "images/potato_imo_statue.jpeg"
+        }
+      }
+    ]
+
+    const markers = [];
+
+    markersData.forEach(element => {
+      var marker = putMarker(
+        element.latlng[0], element.latlng[1],
+        element.data,
+        map
+      );
+
+      markers.push({
+        ...element.data,
+        latlng: element.latlng,
+        marker
+      });
+    });
 
     // 線路用のレイヤーグループを作る
     var railwayLayer = L.layerGroup([]);
@@ -1014,7 +1016,7 @@
 
     drawStation([375, 1300], 'アウターヘブン駅', 'icon7', railwayLayer);
 
-    drawStation([660, 1040], "ハンモザ駅","icon8",railwayLayer);
+    drawStation([660, 1040], "ハンモザ駅", "icon8", railwayLayer);
 
     railwayLayer.addTo(map)
   </script>
@@ -1086,6 +1088,7 @@
       box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
       background-color: rgb(255, 174, 0);
     }
+
     .icon8 {
       width: 20px !important;
       height: 20px !important;
