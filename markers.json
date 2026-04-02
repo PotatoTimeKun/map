@@ -1,0 +1,626 @@
+[
+  {
+    "title": "マセイモ島",
+    "explane": "居住者: 塩ポテト君",
+    "image": "images/maseimo_island.png",
+    "x": 1220,
+    "y": 72,
+    "z": 900
+  },
+  {
+    "title": "すしすきー大学",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/sushi_uni.png",
+    "x": 1360,
+    "y": 70,
+    "z": 750
+  },
+  {
+    "title": "建設中？",
+    "explane": "制作者: 光奏",
+    "image": "images/denchos_kuchu.jpeg",
+    "x": 1550,
+    "y": 231,
+    "z": 950
+  },
+  {
+    "title": "BIG KUCHIBASHI",
+    "explane": "制作者: 光奏",
+    "image": "images/water_kuchibashi.png",
+    "x": 1370,
+    "y": 62,
+    "z": 1114
+  },
+  {
+    "title": "競馬場予定地",
+    "explane": "建設中\n制作者: チャル建設",
+    "image": null,
+    "x": 1300,
+    "y": 70,
+    "z": 600
+  },
+  {
+    "title": "整地師事務所",
+    "explane": "制作者: 久月",
+    "image": "images/seichishi.png",
+    "x": 1330,
+    "y": 70,
+    "z": 520
+  },
+  {
+    "title": "TOJI\\'s HOUSE",
+    "explane": "居住者: たまごとじのすけ",
+    "image": "images/toji_house.png",
+    "x": 1140,
+    "y": 64,
+    "z": 510
+  },
+  {
+    "title": "ぺす像",
+    "explane": "制作者: ?",
+    "image": "images/pes_zou.png",
+    "x": 1000,
+    "y": 71,
+    "z": 900
+  },
+  {
+    "title": "Pes Tower",
+    "explane": "制作者: ?",
+    "image": "images/pes_tower.png",
+    "x": 1045,
+    "y": 72,
+    "z": 850
+  },
+  {
+    "title": "四重の塔",
+    "explane": "制作者: ?",
+    "image": "images/pes_tower.png",
+    "x": 1045,
+    "y": 72,
+    "z": 850
+  },
+  {
+    "title": "かじきの家",
+    "explane": "居住者: かじき",
+    "image": "images/kajiki_house.png",
+    "x": 882,
+    "y": 63,
+    "z": 809
+  },
+  {
+    "title": "コロッセオ",
+    "explane": "制作者: てくてく建設",
+    "image": "images/korosu.png",
+    "x": 660,
+    "y": 71,
+    "z": 880
+  },
+  {
+    "title": "トラップタワー&てくてく像",
+    "explane": "制作者: ?",
+    "image": "images/tt.png",
+    "x": 819,
+    "y": 73,
+    "z": 703
+  },
+  {
+    "title": "本拠点 本島",
+    "explane": "",
+    "image": "images/base_kyoten.png",
+    "x": 975,
+    "y": 79,
+    "z": 590
+  },
+  {
+    "title": "成人男性ハウス",
+    "explane": "制作者: コヤマ",
+    "image": "images/seijindansei.png",
+    "x": 993,
+    "y": 79,
+    "z": 580
+  },
+  {
+    "title": "いじぇハウス",
+    "explane": "居住者: いじぇん",
+    "image": "images/ije_house.png",
+    "x": 944,
+    "y": 75,
+    "z": 571
+  },
+  {
+    "title": "しなりハウス",
+    "explane": "居住者: しなり",
+    "image": "images/shinari_house.png",
+    "x": 1046,
+    "y": 87,
+    "z": 584
+  },
+  {
+    "title": "タマナシ地下迷宮",
+    "explane": "制作者: タマナシ",
+    "image": "images/tama_chika.png",
+    "x": 1048,
+    "y": 87,
+    "z": 578
+  },
+  {
+    "title": "むのむのおうち",
+    "explane": "居住者: むのむ",
+    "image": "images/mnm_house.png",
+    "x": 1081,
+    "y": 83,
+    "z": 581
+  },
+  {
+    "title": "あてむ ず はうす （笑）",
+    "explane": "居住者: あてむ",
+    "image": "images/atm_house.png",
+    "x": 1113,
+    "y": 86,
+    "z": 598
+  },
+  {
+    "title": "デンチョスのお家",
+    "explane": "居住者: 光奏",
+    "image": "images/chos_house.png",
+    "x": 1110,
+    "y": 87,
+    "z": 611
+  },
+  {
+    "title": "デンチョス港",
+    "explane": "居住者: 光奏",
+    "image": null,
+    "x": 1108,
+    "y": 64,
+    "z": 656
+  },
+  {
+    "title": "移転の館",
+    "explane": "",
+    "image": "images/iten.png",
+    "x": 1010,
+    "y": 79,
+    "z": 587
+  },
+  {
+    "title": "殺し愛の間",
+    "explane": "制作者: ?",
+    "image": "images/koroshi.png",
+    "x": 1002,
+    "y": 95,
+    "z": 550
+  },
+  {
+    "title": "旧デンチョスの家 東屋",
+    "explane": "制作者: デンチョス",
+    "image": "images/old_chos.png",
+    "x": 1004,
+    "y": 72,
+    "z": 636
+  },
+  {
+    "title": "タマナシ城塞",
+    "explane": "制作者: タマナシ",
+    "image": "images/tama_house.png",
+    "x": 689,
+    "y": 67,
+    "z": 552
+  },
+  {
+    "title": "タマナシ港",
+    "explane": "制作者: タマナシ",
+    "image": null,
+    "x": 689,
+    "y": 67,
+    "z": 552
+  },
+  {
+    "title": "しなり城",
+    "explane": "制作者: しなり",
+    "image": "images/shinari_castle.png",
+    "x": 611,
+    "y": 68,
+    "z": 604
+  },
+  {
+    "title": "北島・コマンドアイランド",
+    "explane": "",
+    "image": "images/kita_island.png",
+    "x": 996,
+    "y": 82,
+    "z": 38
+  },
+  {
+    "title": "アパート ポテトライフ",
+    "explane": "制作者: 塩ポテト君\n居住者: 塩ポテト君",
+    "image": "images/potatolife.png",
+    "x": 1084,
+    "y": 72,
+    "z": 847
+  },
+  {
+    "title": "イモ クルーズ",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/imoship.png",
+    "x": 1175,
+    "y": 65,
+    "z": 788
+  },
+  {
+    "title": "レストラン Nyap",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/nyap.png",
+    "x": 1120,
+    "y": 72,
+    "z": 848
+  },
+  {
+    "title": "豆腐建築",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/tofu.png",
+    "x": 1179,
+    "y": 65,
+    "z": 969
+  },
+  {
+    "title": "マセイモ港",
+    "explane": "制作者: 塩ポテト君",
+    "image": null,
+    "x": 1220,
+    "y": 64,
+    "z": 801
+  },
+  {
+    "title": "ハートの桜と空中じゃがいも畑",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/imosakura.png",
+    "x": 1220,
+    "y": 72,
+    "z": 873
+  },
+  {
+    "title": "マセイモ像",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/imo_statue.png",
+    "x": 1233,
+    "y": 72,
+    "z": 818
+  },
+  {
+    "title": "罪を償うナス像",
+    "explane": "制作者: 塩ポテト君",
+    "image": null,
+    "x": 1202,
+    "y": 64,
+    "z": 938
+  },
+  {
+    "title": "吊るされるナス像",
+    "explane": "制作者: 塩ポテト君",
+    "image": null,
+    "x": 1180,
+    "y": 64,
+    "z": 892
+  },
+  {
+    "title": "マセイモ交番",
+    "explane": "制作者: 塩ポテト君",
+    "image": null,
+    "x": 1187,
+    "y": 64,
+    "z": 872
+  },
+  {
+    "title": "マセイモ弓道場",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/imo_kyudo.png",
+    "x": 1236,
+    "y": 72,
+    "z": 938
+  },
+  {
+    "title": "全自動パンプキンパイ工場",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/kabocha.png",
+    "x": 1161,
+    "y": 72,
+    "z": 940
+  },
+  {
+    "title": "ジェットコースター乗り場",
+    "explane": "制作者: 塩ポテト君",
+    "image": null,
+    "x": 1256,
+    "y": 64,
+    "z": 882
+  },
+  {
+    "title": "日付カウントアップ回路",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/count.png",
+    "x": 1248,
+    "y": 64,
+    "z": 817
+  },
+  {
+    "title": "日付カウントアップ回路見学路",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/count2.png",
+    "x": 1241,
+    "y": 64,
+    "z": 812
+  },
+  {
+    "title": "マセイモ島案内図",
+    "explane": "制作者: 塩ポテト君",
+    "image": null,
+    "x": 1210,
+    "y": 64,
+    "z": 812
+  },
+  {
+    "title": "ポテト港-イモガンダム前",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/imoshipsakura.png",
+    "x": 1108,
+    "y": 65,
+    "z": 908
+  },
+  {
+    "title": "イモガンダム",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/imogandam.png",
+    "x": 1123,
+    "y": 65,
+    "z": 892
+  },
+  {
+    "title": "ナス公園（笑）",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/nasupark.png",
+    "x": 1098,
+    "y": 64,
+    "z": 827
+  },
+  {
+    "title": "とじのすけ像",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/tojinosuke.jpeg",
+    "x": 1017,
+    "y": 64,
+    "z": 912
+  },
+  {
+    "title": "溶岩にゃぷ",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/lavanyap.jpeg",
+    "x": 1063,
+    "y": 64,
+    "z": 897
+  },
+  {
+    "title": "ナスランド",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/nasuland.jpeg",
+    "x": 1063,
+    "y": 64,
+    "z": 1141
+  },
+  {
+    "title": "武装要塞国家アウターヘブン",
+    "explane": "制作者: ドグワン",
+    "image": "images/dogwan_village.jpeg",
+    "x": 1633,
+    "y": 63,
+    "z": 766
+  },
+  {
+    "title": "金うんち神社",
+    "explane": "制作者: しなり？",
+    "image": "images/gold_unchi.jpeg",
+    "x": 1363,
+    "y": 70,
+    "z": 420
+  },
+  {
+    "title": "海上都市 芋ータル(建設中)",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/imo_taru.jpeg",
+    "x": 1161,
+    "y": 65,
+    "z": 346
+  },
+  {
+    "title": "タマナシのやらかし見学ロード",
+    "explane": "やらかし者: タマナシ",
+    "image": "images/tamanashi_tnt.jpeg",
+    "x": -479,
+    "y": 72,
+    "z": 427
+  },
+  {
+    "title": "月玉農場",
+    "explane": "制作者: 月玉",
+    "image": "images/tsukitama_house.jpeg",
+    "x": -681,
+    "y": 63,
+    "z": 645
+  },
+  {
+    "title": "マセイモ航空 MASE-300YEN",
+    "explane": "制作者: 塩ポテト君",
+    "image": "images/imo_airplane.jpeg",
+    "x": 1114,
+    "y": 64,
+    "z": 743
+  },
+  {
+    "title": "あかみハウス",
+    "explane": "制作者: あかみ",
+    "image": "images/akami_house.jpeg",
+    "x": 1569,
+    "y": 70,
+    "z": 701
+  },
+  {
+    "title": "ハンもザハウス",
+    "explane": "制作者: ハンもザ",
+    "image": "images/piramiddo.jpeg",
+    "x": 1561,
+    "y": 64,
+    "z": 594
+  },
+  {
+    "title": "月と玉",
+    "explane": "制作者: 月玉",
+    "image": "images/tsukitama.jpeg",
+    "x": 1673,
+    "y": 64,
+    "z": 628
+  },
+  {
+    "title": "刃牙の家",
+    "explane": "制作者: ハンもザ？(不明)",
+    "image": "images/baki.jpeg",
+    "x": 1474,
+    "y": 64,
+    "z": 628
+  },
+  {
+    "title": "あかみサンダーマウンテン",
+    "explane": "制作者: あかみ",
+    "image": "images/akamijet.png",
+    "x": 1681,
+    "y": 72,
+    "z": 716
+  },
+  {
+    "title": "めい城(仮名称)",
+    "explane": "制作者: めい",
+    "image": "images/mei_castle.jpeg",
+    "x": 1632,
+    "y": 64,
+    "z": 589
+  },
+  {
+    "title": "金玉",
+    "explane": "制作者不明",
+    "image": "images/kintama.jpeg",
+    "x": 1698,
+    "y": 64,
+    "z": 544
+  },
+  {
+    "title": "えびちゃんやっほ～",
+    "explane": "制作者: ドグワン",
+    "image": "images/ebi.jpeg",
+    "x": 1586,
+    "y": 64,
+    "z": 743
+  },
+  {
+    "title": "おしろ",
+    "explane": "制作者 : 月玉",
+    "image": "images/shiro.jpeg",
+    "x": 1927,
+    "y": 64,
+    "z": 1096
+  },
+  {
+    "title": "マセイモ地蔵、仏像、KIURI像",
+    "explane": "制作者 : ドグワン",
+    "image": "images/jizou.jpeg",
+    "x": 1444,
+    "y": 64,
+    "z": 693
+  },
+  {
+    "title": "銅閣寺",
+    "explane": "制作者 : ドグワン(予想)",
+    "image": "images/doukaku.jpeg",
+    "x": 1469,
+    "y": 64,
+    "z": 718
+  },
+  {
+    "title": "エロマンガ島",
+    "explane": "制作者 : ハンもザ(予想)",
+    "image": "images/manga.jpeg",
+    "x": 1795,
+    "y": 64,
+    "z": 409
+  },
+  {
+    "title": "回転寿司にしようと思い建てたは良いけど失敗したのであえなく村人を流すだけのクソ施設になりました無念",
+    "explane": "制作者不明",
+    "image": "images/kaiten.jpeg",
+    "x": 1784,
+    "y": 64,
+    "z": 245
+  },
+  {
+    "title": "あかみ城(建設中)",
+    "explane": "制作者 : あかみ",
+    "image": "images/akamikurabu.jpeg",
+    "x": 1840,
+    "y": 64,
+    "z": 718
+  },
+  {
+    "title": "なにか",
+    "explane": "制作者 : あかみ(予想)",
+    "image": "images/nanika.jpeg",
+    "x": 1708,
+    "y": 64,
+    "z": 703
+  },
+  {
+    "title": "建設中の迷路っぽいもの",
+    "explane": "制作者 : あかみ(予想)",
+    "image": "images/maze.jpeg",
+    "x": 1708,
+    "y": 64,
+    "z": 683
+  },
+  {
+    "title": "パンプ金太郎",
+    "explane": "制作者 : ドグワン",
+    "image": "images/panpu.jpeg",
+    "x": 1612,
+    "y": 64,
+    "z": 758
+  },
+  {
+    "title": "忍者屋敷 ～芋からの挑戦状～",
+    "explane": "制作者 : 塩ポテト君",
+    "image": "images/ninja.jpeg",
+    "x": 768,
+    "y": 64,
+    "z": 991
+  },
+  {
+    "title": "マセイモを持ち上げる塩ポテト像",
+    "explane": "制作者 : 塩ポテト君",
+    "image": "images/potato_imo_statue.jpeg",
+    "x": 920,
+    "y": 64,
+    "z": 952
+  },
+  {
+    "title": "サンタ",
+    "explane": "制作者不明",
+    "image": "images/santa.jpeg",
+    "x": 275,
+    "y": 64,
+    "z": 608
+  },
+  {
+    "title": "クレーンで持ち上げられるアヒル像",
+    "explane": "制作者 : 塩ポテト君",
+    "image": "images/ahiru.jpeg",
+    "x": 748,
+    "y": 64,
+    "z": 812
+  }
+]
