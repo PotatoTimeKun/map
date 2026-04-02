@@ -7,7 +7,7 @@ from PIL import Image
 
 def get_map_color(block_name):
     block_name = block_name.lower().replace("minecraft:", "").replace("universal_minecraft:", "")
-    if block_name in ["air", "cave_air", "structure_void", "barrier", "light_block", "light"] or "glass" in block_name:
+    if block_name in ["air", "cave_air", "structure_void", "barrier", "light_block", "light"] or "glass" in block_name or "torch" in block_name:
         return 0
     if "grass_block" in block_name or block_name == "grass" or "slime" in block_name:
         return 1

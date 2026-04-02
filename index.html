@@ -19,19 +19,21 @@
       position: relative;
       padding: 0;
       margin: 0;
-      overflow: hidden; /* For 3D canvas fullscreen */
+      overflow: hidden;
+      /* For 3D canvas fullscreen */
     }
 
     #map {
       height: 90vh;
       width: 100vw;
     }
-    
+
     #map3d {
       height: 90vh;
       width: 100vw;
       display: none;
-      background-color: #87CEEB; /* Sky color */
+      background-color: #87CEEB;
+      /* Sky color */
     }
 
     #controls-container {
@@ -60,20 +62,20 @@
       box-shadow: inset 0 0 2px rgba(128, 128, 128, 0.1);
       transform: translateY(2px);
     }
-    
+
     #loading3d {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(255,255,255,0.9);
+      background: rgba(255, 255, 255, 0.9);
       color: #333;
       padding: 20px 40px;
       border-radius: 8px;
       font-weight: bold;
       z-index: 2000;
       display: none;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     #markerSearch {
@@ -86,7 +88,7 @@
     }
 
     #searchResults {
-      position:absolute;
+      position: absolute;
       z-index: 10000;
       list-style: none;
       margin: 4px 0 0;
@@ -111,15 +113,86 @@
       stroke-width: 5;
     }
 
-    .icon1 { width: 20px !important; height: 20px !important; border-radius: 10px; border: 3px solid #fdfdfd; box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); background-color: rgb(255, 150, 157); }
-    .icon2 { width: 20px !important; height: 20px !important; border-radius: 10px; border: 3px solid #fdfdfd; box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); background-color: rgb(255, 0, 0); }
-    .icon3 { width: 20px !important; height: 20px !important; border-radius: 10px; border: 3px solid #fdfdfd; box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); background-color: rgb(255, 255, 255); }
-    .icon4 { width: 20px !important; height: 20px !important; border-radius: 10px; border: 3px solid #fdfdfd; box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); background-color: rgb(0, 255, 255); }
-    .icon5 { width: 20px !important; height: 20px !important; border-radius: 10px; border: 3px solid #fdfdfd; box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); background-color: rgb(255, 255, 0); }
-    .icon6 { width: 20px !important; height: 20px !important; border-radius: 10px; border: 3px solid #fdfdfd; box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); background-color: rgb(0, 0, 255); }
-    .icon7 { width: 20px !important; height: 20px !important; border-radius: 10px; border: 3px solid #fdfdfd; box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); background-color: rgb(255, 174, 0); }
-    .icon8 { width: 20px !important; height: 20px !important; border-radius: 10px; border: 3px solid #fdfdfd; box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); background-color: rgb(0, 255, 0); }
-    .icon9 { width: 20px !important; height: 20px !important; border-radius: 10px; border: 3px solid #fdfdfd; box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); background-color: rgb(206, 189, 112); }
+    .icon1 {
+      width: 20px !important;
+      height: 20px !important;
+      border-radius: 10px;
+      border: 3px solid #fdfdfd;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+      background-color: rgb(255, 150, 157);
+    }
+
+    .icon2 {
+      width: 20px !important;
+      height: 20px !important;
+      border-radius: 10px;
+      border: 3px solid #fdfdfd;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+      background-color: rgb(255, 0, 0);
+    }
+
+    .icon3 {
+      width: 20px !important;
+      height: 20px !important;
+      border-radius: 10px;
+      border: 3px solid #fdfdfd;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+      background-color: rgb(255, 255, 255);
+    }
+
+    .icon4 {
+      width: 20px !important;
+      height: 20px !important;
+      border-radius: 10px;
+      border: 3px solid #fdfdfd;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+      background-color: rgb(0, 255, 255);
+    }
+
+    .icon5 {
+      width: 20px !important;
+      height: 20px !important;
+      border-radius: 10px;
+      border: 3px solid #fdfdfd;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+      background-color: rgb(255, 255, 0);
+    }
+
+    .icon6 {
+      width: 20px !important;
+      height: 20px !important;
+      border-radius: 10px;
+      border: 3px solid #fdfdfd;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+      background-color: rgb(0, 0, 255);
+    }
+
+    .icon7 {
+      width: 20px !important;
+      height: 20px !important;
+      border-radius: 10px;
+      border: 3px solid #fdfdfd;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+      background-color: rgb(255, 174, 0);
+    }
+
+    .icon8 {
+      width: 20px !important;
+      height: 20px !important;
+      border-radius: 10px;
+      border: 3px solid #fdfdfd;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+      background-color: rgb(0, 255, 0);
+    }
+
+    .icon9 {
+      width: 20px !important;
+      height: 20px !important;
+      border-radius: 10px;
+      border: 3px solid #fdfdfd;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+      background-color: rgb(206, 189, 112);
+    }
 
     .leaflet-image-layer {
       image-rendering: pixelated;
@@ -187,7 +260,7 @@
           loadJson("railway.json"),
           loadJson("mapData/MapColor.json")
         ]);
-        
+
         settingsData = settings;
         colorData.forEach(c => {
           mapColorDict[c.id] = c.rgb;
@@ -281,11 +354,11 @@
 
       // 1. Setup Three.js
       scene = new THREE.Scene();
-      
+
       const width = window.innerWidth;
       const height = window.innerHeight * 0.9; // 90vh
       camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 10000);
-      
+
       // Minecraft Z increases south. Let's make X=Right, Z=Down, Y=Up
       camera.position.set(975, 400, 590 + 300); // 拠点少し南の上空から
       camera.lookAt(975, 70, 590);
@@ -302,7 +375,7 @@
       // Lighting
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
       scene.add(ambientLight);
-      
+
       const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
       dirLight.position.set(500, 1000, 200);
       scene.add(dirLight);
@@ -310,7 +383,7 @@
       // Animation loop
       function animate() {
         requestAnimationFrame(animate);
-        if(is3DMode) {
+        if (is3DMode) {
           controls.update();
           renderer.render(scene, camera);
         }
@@ -319,7 +392,7 @@
 
       // Resize event
       window.addEventListener('resize', () => {
-        if(is3DMode) {
+        if (is3DMode) {
           const w = window.innerWidth;
           const h = window.innerHeight * 0.9;
           camera.aspect = w / h;
@@ -331,17 +404,17 @@
       // 2. Load JSON data
       const geometry = new THREE.BoxGeometry(1, 1, 1);
       const material = new THREE.MeshLambertMaterial({ color: 0xffffff });
-      
+
       const loadAreas = settingsData?.load_area || [];
       const areaSet = new Set();
-      
+
       loadAreas.forEach(area => {
         let minAx = Math.floor(area.x_min / 128);
         let maxAx = Math.floor(area.x_max / 128);
         let minAz = Math.floor(area.z_min / 128);
         let maxAz = Math.floor(area.z_max / 128);
-        for(let ax = minAx; ax <= maxAx; ax++) {
-          for(let az = minAz; az <= maxAz; az++) {
+        for (let ax = minAx; ax <= maxAx; ax++) {
+          for (let az = minAz; az <= maxAz; az++) {
             areaSet.add(`${ax}_${az}`);
           }
         }
@@ -351,17 +424,17 @@
       const promises = Array.from(areaSet).map(async (areaKey) => {
         try {
           const res = await fetch(`mapData/JSON/${areaKey}.json${VERSION}`);
-          if(!res.ok) return;
+          if (!res.ok) return;
           const data = await res.json();
-          
+
           let blockCount = 0;
-          for(let rx=0; rx<128; rx++){
-            for(let rz=0; rz<128; rz++){
-              if(data.colors[rx][rz] !== 0) blockCount++;
+          for (let rx = 0; rx < 128; rx++) {
+            for (let rz = 0; rz < 128; rz++) {
+              if (data.colors[rx][rz] !== 0) blockCount++;
             }
           }
-          
-          if(blockCount === 0) return;
+
+          if (blockCount === 0) return;
 
           const instancedMesh = new THREE.InstancedMesh(geometry, material, blockCount);
           const matrix = new THREE.Matrix4();
@@ -369,20 +442,20 @@
           const position = new THREE.Vector3();
           const quaternion = new THREE.Quaternion();
           const scale = new THREE.Vector3(1, 1, 1);
-          
+
           const [axStr, azStr] = areaKey.split('_');
           const ax = parseInt(axStr);
           const az = parseInt(azStr);
-          
+
           let i = 0;
-          for(let rx=0; rx<128; rx++){
-            for(let rz=0; rz<128; rz++){
+          for (let rx = 0; rx < 128; rx++) {
+            for (let rz = 0; rz < 128; rz++) {
               const cId = data.colors[rx][rz];
-              if(cId !== 0) {
+              if (cId !== 0) {
                 const globalX = ax * 128 + rx;
                 const globalZ = az * 128 + rz;
                 const globalY = data.y_coords[rx][rz];
-                
+
                 // Y座標が 150 を超える高空のオブジェクト（浮島や巨大建築の屋根など）は
                 // 下まで伸ばさずに浮遊しているように見せる。
                 // 基準となる厚さは、高空なら5ブロック、それ以外は地面(Y=-64)まで伸ばす。
@@ -392,30 +465,30 @@
                 } else {
                   h = Math.max(1, globalY - (-64));
                 }
-                
+
                 // ブロックの底辺を基準に高さを配置
                 position.set(globalX, globalY - (h / 2), globalZ);
                 scale.set(1, h, 1);
-                
+
                 matrix.compose(position, quaternion, scale);
                 instancedMesh.setMatrixAt(i, matrix);
-                
-                const rgb = mapColorDict[cId] || [255,255,255];
-                colorObj.setRGB(rgb[0]/255, rgb[1]/255, rgb[2]/255);
+
+                const rgb = mapColorDict[cId] || [255, 255, 255];
+                colorObj.setRGB(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255);
                 instancedMesh.setColorAt(i, colorObj);
-                
+
                 i++;
               }
             }
           }
           scene.add(instancedMesh);
-        } catch(err) {
+        } catch (err) {
           // ignore missing jsons
         }
       });
 
       await Promise.all(promises);
-      
+
       const loader = document.getElementById('loading3d');
       loader.style.display = 'none';
       is3DInitialized = true;
@@ -439,20 +512,20 @@
       const map3dDiv = document.getElementById('map3d');
       const searchBox = document.getElementById('markerSearch');
       const railwayBtn = document.getElementById('toggleRailway');
-      
-      if(is3DMode) {
+
+      if (is3DMode) {
         map2dDiv.style.display = 'none';
         searchBox.style.display = 'none';
         railwayBtn.style.display = 'none';
         map3dDiv.style.display = 'block';
         this.textContent = '2Dマップに戻る';
-        
-        if(!is3DInitialized) {
+
+        if (!is3DInitialized) {
           const loader = document.getElementById('loading3d');
           loader.style.display = 'block';
           // 少し待ってから描画を開始してUIフリーズを回避
           setTimeout(async () => {
-             await init3DMap();
+            await init3DMap();
           }, 50);
         } else {
           window.dispatchEvent(new Event('resize'));
@@ -470,7 +543,7 @@
     const results = document.getElementById("searchResults");
 
     input.addEventListener("input", () => {
-      if(is3DMode) return;
+      if (is3DMode) return;
       const keyword = input.value.trim();
       results.innerHTML = "";
       if (keyword === "") return;
@@ -493,4 +566,5 @@
     });
   </script>
 </body>
+
 </html>
