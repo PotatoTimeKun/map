@@ -359,9 +359,13 @@
       const height = window.innerHeight * 0.9; // 90vh
       camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 10000);
 
+      const center2d = map.getCenter();
+      const targetX = center2d.lng;
+      const targetZ = -center2d.lat;
+
       // Minecraft Z increases south. Let's make X=Right, Z=Down, Y=Up
-      camera.position.set(975, 400, 590 + 300); // 拠点少し南の上空から
-      camera.lookAt(975, 70, 590);
+      camera.position.set(targetX, 400, targetZ + 300);
+      camera.lookAt(targetX, 70, targetZ);
 
       renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setSize(width, height);
@@ -369,7 +373,7 @@
       container.appendChild(renderer.domElement);
 
       controls = new OrbitControls(camera, renderer.domElement);
-      controls.target.set(975, 70, 590);
+      controls.target.set(targetX, 70, targetZ);
       controls.update();
 
       // Lighting
@@ -520,6 +524,10 @@
         map3dDiv.style.display = 'block';
         this.textContent = '2Dマップに戻る';
 
+        const center2d = map.getCenter();
+        const targetX = center2d.lng;
+        const targetZ = -center2d.lat;
+
         if (!is3DInitialized) {
           const loader = document.getElementById('loading3d');
           loader.style.display = 'block';
@@ -528,9 +536,18 @@
             await init3DMap();
           }, 50);
         } else {
+          controls.target.set(targetX, 70, targetZ);
+          camera.position.set(targetX, 400, targetZ + 300);
+          camera.lookAt(targetX, 70, targetZ);
+          controls.update();
           window.dispatchEvent(new Event('resize'));
         }
       } else {
+        if (is3DInitialized) {
+          const targetX = controls.target.x;
+          const targetZ = controls.target.z;
+          map.setView(mcToLatLng(targetX, targetZ), map.getZoom(), { animate: false });
+        }
         map3dDiv.style.display = 'none';
         map2dDiv.style.display = 'block';
         searchBox.style.display = 'block';
