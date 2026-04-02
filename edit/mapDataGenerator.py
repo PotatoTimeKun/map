@@ -5,40 +5,83 @@ import math
 import numpy as np
 from PIL import Image
 
-def get_map_color(block_name):
-    block_name = block_name.lower().replace("minecraft:", "").replace("universal_minecraft:", "")
-    if block_name in ["air", "cave_air", "structure_void", "barrier", "light_block", "light"] or "glass" in block_name or "torch" in block_name:
+def get_map_color(base_name, full_name):
+    base_name = base_name.lower().replace("minecraft:", "").replace("universal_minecraft:", "")
+    full_name = full_name.lower()
+    
+    if base_name in ["air", "cave_air", "structure_void", "barrier", "light_block", "light"] or "glass" in base_name or "torch" in base_name:
         return 0
-    if "grass_block" in block_name or block_name == "grass" or "slime" in block_name:
-        return 1
-    if "sand" in block_name and "sandstone" not in block_name:
-        return 2
-    if "wool" in block_name or "cobweb" in block_name:
-        return 3
-    if "lava" in block_name or "fire" in block_name or "redstone_block" in block_name:
-        return 4
-    if block_name in ["ice", "packed_ice", "blue_ice"]:
-        return 5
-    if "iron_block" in block_name:
-        return 6
-    if "leaves" in block_name or "plant" in block_name or "vine" in block_name or "fern" in block_name or "tallgrass" in block_name or "sapling" in block_name or "sugar_cane" in block_name:
-        return 7
-    if "snow" in block_name or "powder_snow" in block_name:
+        
+    if "terracotta" in full_name or "hardened_clay" in full_name:
+        if "white" in full_name: return 36
+        if "orange" in full_name: return 37
+        if "magenta" in full_name: return 38
+        if "light_blue" in full_name: return 39
+        if "yellow" in full_name: return 40
+        if "lime" in full_name: return 41
+        if "pink" in full_name: return 42
+        if "light_gray" in full_name or "silver" in full_name: return 44
+        if "gray" in full_name: return 43
+        if "cyan" in full_name: return 45
+        if "purple" in full_name: return 46
+        if "blue" in full_name: return 47
+        if "brown" in full_name: return 48
+        if "green" in full_name: return 49
+        if "red" in full_name: return 50
+        if "black" in full_name: return 51
+        return 35 # Default Terracotta
+        
+    if "concrete" in full_name or "wool" in full_name or "carpet" in full_name:
+        if "white" in full_name: return 8
+        if "orange" in full_name: return 15
+        if "magenta" in full_name: return 16
+        if "light_blue" in full_name: return 17
+        if "yellow" in full_name: return 18
+        if "lime" in full_name: return 19
+        if "pink" in full_name: return 20
+        if "light_gray" in full_name or "silver" in full_name: return 22
+        if "gray" in full_name: return 21
+        if "cyan" in full_name: return 23
+        if "purple" in full_name: return 24
+        if "blue" in full_name: return 25
+        if "brown" in full_name: return 26
+        if "green" in full_name: return 27
+        if "red" in full_name: return 28
+        if "black" in full_name: return 29
         return 8
-    if "clay" in block_name:
+        
+    if "granite" in base_name: return 36 # Pinkish white terracotta suits granite
+    if "diorite" in base_name: return 22 # Light gray
+    if "andesite" in base_name: return 6 # Iron color (brighter than stone)
+    if "quartz" in base_name: return 14
+
+    if "grass_block" in base_name or base_name == "grass" or "slime" in base_name:
+        return 1
+    if "sand" in base_name and "sandstone" not in base_name:
+        return 2
+    if "cobweb" in base_name:
+        return 3
+    if "lava" in base_name or "fire" in base_name or "redstone_block" in base_name:
+        return 4
+    if base_name in ["ice", "packed_ice", "blue_ice"]:
+        return 5
+    if "iron_block" in base_name:
+        return 6
+    if "leaves" in base_name or "plant" in base_name or "vine" in base_name or "fern" in base_name or "tallgrass" in base_name or "sapling" in base_name or "sugar_cane" in base_name:
+        return 7
+    if "snow" in base_name or "powder_snow" in base_name:
+        return 8
+    if "clay" in base_name:
         return 9
-    if "dirt" in block_name or "podzol" in block_name or "farmland" in block_name or "coarse_dirt" in block_name or "path" in block_name:
+    if "dirt" in base_name or "podzol" in base_name or "farmland" in base_name or "coarse_dirt" in base_name or "path" in base_name:
         return 10
-    if "water" in block_name or "kelp" in block_name or "seagrass" in block_name:
+    if "water" in base_name or "kelp" in base_name or "seagrass" in base_name:
         return 12
-    if "wood" in block_name or "log" in block_name or "planks" in block_name:
+    if "wood" in base_name or "log" in base_name or "planks" in base_name:
         return 13
-    if "quartz" in block_name or "diorite" in block_name:
-        return 14
-    if "orange" in block_name or "acacia" in block_name:
-        return 15
-    if "stone" in block_name or "cobblestone" in block_name or "andesite" in block_name or "gravel" in block_name or "bedrock" in block_name or "ore" in block_name or "granite" in block_name:
+    if "stone" in base_name or "cobblestone" in base_name or "gravel" in base_name or "bedrock" in base_name or "ore" in base_name:
         return 11
+        
     return 11 # Default
 
 def main():
@@ -92,7 +135,13 @@ def main():
                 
                 palette_map = {}
                 for i, block in enumerate(chunk.block_palette):
-                    palette_map[i] = get_map_color(block.base_name)
+                    props_str = ""
+                    try:
+                        props_str = ",".join(f"{k}={v}" for k, v in block.properties.items())
+                    except Exception:
+                        pass
+                    block_full_str = f"{block.base_name}[{props_str}]"
+                    palette_map[i] = get_map_color(block.base_name, block_full_str)
                 
                 try:
                     blocks = np.array(chunk.blocks[0:16, min_y:max_y, 0:16])
@@ -135,7 +184,21 @@ def main():
                 c = colors[x, z]
                 if c != 0:
                     rgb = color_dict.get(c, (0,0,0))
-                    pixels[x, z] = (rgb[0], rgb[1], rgb[2], 255)
+                    
+                    # 影の計算 (北側 z-1 との高さの差分で陰影をつける)
+                    factor = 1.0
+                    if z > 0:
+                        y_diff = y_coords[x, z] - y_coords[x, z-1]
+                        if y_diff > 0:
+                            factor = 1.2  # 北より高い場合は明るくする
+                        elif y_diff < 0:
+                            factor = 0.8  # 北より低い場合は暗くする
+                    
+                    r = min(255, int(rgb[0] * factor))
+                    g = min(255, int(rgb[1] * factor))
+                    b = min(255, int(rgb[2] * factor))
+                    
+                    pixels[x, z] = (r, g, b, 255)
         img.save(f"../mapData/image/{area_X}_{area_Z}.png")
 
     level.close()
