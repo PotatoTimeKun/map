@@ -6,32 +6,44 @@
   <title>すしすきーマイクラサーバ マップ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
   <style>
     body {
       position: relative;
       padding: 0;
       margin: 0;
+      overflow: hidden; /* For 3D canvas fullscreen */
     }
 
     #map {
       height: 90vh;
+      width: 100vw;
     }
-  </style>
-  <link rel="icon" href="fav.png" type="image/png">
-</head>
+    
+    #map3d {
+      height: 90vh;
+      width: 100vw;
+      display: none;
+      background-color: #87CEEB; /* Sky color */
+    }
 
-<body>
-  <button id="toggleRailway">線路の表示/非表示</button>
-
-  <input type="text" id="markerSearch" placeholder="建物名・地域名を検索" />
-  <ul id="searchResults"></ul>
-
-  <style>
-    #toggleRailway {
+    #controls-container {
       position: absolute;
       z-index: 1000;
       bottom: 10px;
       left: 5px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .action-btn {
       display: inline-block;
       padding: 0.5em 1em;
       text-decoration: none;
@@ -44,9 +56,24 @@
       cursor: pointer;
     }
 
-    #toggleRailway:active {
+    .action-btn:active {
       box-shadow: inset 0 0 2px rgba(128, 128, 128, 0.1);
       transform: translateY(2px);
+    }
+    
+    #loading3d {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255,255,255,0.9);
+      color: #333;
+      padding: 20px 40px;
+      border-radius: 8px;
+      font-weight: bold;
+      z-index: 2000;
+      display: none;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
     #markerSearch {
@@ -107,51 +134,34 @@
       border-bottom: 1px solid #000 !important;
     }
   </style>
+  <link rel="icon" href="fav.png" type="image/png">
+</head>
+
+<body>
+  <input type="text" id="markerSearch" placeholder="建物名・地域名を検索" />
+  <ul id="searchResults"></ul>
 
   <div id="map"></div>
+  <div id="map3d"></div>
+  <div id="loading3d">3Dマップを準備しています...<br>(初回はPC性能によりフリーズする場合があります)</div>
+
+  <div id="controls-container">
+    <button id="toggleRailway" class="action-btn">線路の表示/非表示</button>
+    <button id="toggle3D" class="action-btn">3Dマップに切り替え</button>
+  </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
     const VERSION = "?ver=3.0.0"
 
     // マイクラ座標 (X, Z) から Leaflet 用の LatLng [Lat, Lng] に変換する
-    // マイクラの X(東西) は Leaflet の Lng に。マイクラの Z(南北) は Leaflet の Lat(※上下反転) に。
     function mcToLatLng(mcX, mcZ) {
       return [-mcZ, mcX];
     }
 
-    // タイルのサイズを監視して安全に +1px するキャッシュ対策の残り
-    function watchTileSize(tile) {
-      let lastWidth = null;
-      let lastHeight = null;
-      const observer = new MutationObserver(() => {
-        const w = parseFloat(tile.style.width);
-        const h = parseFloat(tile.style.height);
-        if (isNaN(w) || isNaN(h)) return;
-        if (w === lastWidth && h === lastHeight) return;
-        lastWidth = w;
-        lastHeight = h;
-        observer.disconnect();
-        tile.style.width = (w + 1) + "px";
-        tile.style.height = (h + 1) + "px";
-        observer.observe(tile, { attributes: true, attributeFilter: ["style"] });
-      });
-      observer.observe(tile, { attributes: true, attributeFilter: ["style"] });
-    }
-
-    const tileObserver = new MutationObserver((mutations) => {
-      for (const m of mutations) {
-        for (const node of m.addedNodes) {
-          if (node instanceof HTMLImageElement && node.classList.contains("leaflet-image-layer")) {
-            watchTileSize(node);
-          }
-        }
-      }
-    });
-
-    tileObserver.observe(document.body, { childList: true, subtree: true });
-
-    // マップ初期化
     var map = L.map('map', {
       crs: L.CRS.Simple,
       minZoom: -3
@@ -159,20 +169,29 @@
 
     var railwayLayer = L.layerGroup([]);
     var markersList = [];
+    let settingsData, mapColorDict = {};
+    let is3DMode = false;
+    let is3DInitialized = false;
 
-    // JSONロード用ユーティリティ (キャッシュ対策付き)
+    // JSONロード用ユーティリティ
     async function loadJson(url) {
       const res = await fetch(url + VERSION);
       return await res.json();
     }
 
-    async function initializeMap() {
+    async function initialize2DMap() {
       try {
-        const [settings, markersData, railwayData] = await Promise.all([
+        const [settings, markersData, railwayData, colorData] = await Promise.all([
           loadJson("edit/Setting.json"),
           loadJson("markers.json"),
-          loadJson("railway.json")
+          loadJson("railway.json"),
+          loadJson("mapData/MapColor.json")
         ]);
+        
+        settingsData = settings;
+        colorData.forEach(c => {
+          mapColorDict[c.id] = c.rgb;
+        });
 
         // 1. タイルを配置
         let globalMinX = Infinity, globalMaxX = -Infinity;
@@ -196,19 +215,17 @@
           for (let ax = minAx; ax <= maxAx; ax++) {
             for (let az = minAz; az <= maxAz; az++) {
               let url = `mapData/image/${ax}_${az}.png${VERSION}`;
-              // bounds=[[South, West], [North, East]] = [[minLat, minLng], [maxLat, maxLng]]
               let bounds = [
-                mcToLatLng((ax) * 128, (az + 1) * 128),     // SouthWest
-                mcToLatLng((ax + 1) * 128, (az) * 128)      // NorthEast
+                mcToLatLng((ax) * 128, (az + 1) * 128),
+                mcToLatLng((ax + 1) * 128, (az) * 128)
               ];
               L.imageOverlay(url, bounds).addTo(map);
             }
           }
         });
 
-        // トータル範囲は取得するが、初期表示は本拠点付近を中心に拡大して表示
         if (globalMinX !== Infinity) {
-          map.setView(mcToLatLng(975, 590), 0); // 本拠点付近を少し拡大して表示
+          map.setView(mcToLatLng(975, 590), 0);
         }
 
         // 2. マーカーを配置
@@ -230,55 +247,182 @@
           });
         });
 
-        // 3. 路線を配置
-        function drawRailway(points, name, color) {
-          var latlngPoints = points.map(pt => mcToLatLng(pt[0], pt[1]));
-          var polyline = L.polyline(latlngPoints, { color: color, className: "railway-line" }).addTo(railwayLayer);
-          polyline.bindTooltip(name, {
-            permanent: true,
-            direction: 'center',
-            className: 'railway-label'
-          }).openTooltip();
-        }
-
+        // 3. 路線・駅を配置
         if (railwayData.railways) {
           railwayData.railways.forEach(r => {
-            drawRailway(r.points, r.name, r.color);
+            var latlngPoints = r.points.map(pt => mcToLatLng(pt[0], pt[1]));
+            var polyline = L.polyline(latlngPoints, { color: r.color, className: "railway-line" }).addTo(railwayLayer);
+            polyline.bindTooltip(r.name, { permanent: true, direction: 'center', className: 'railway-label' }).openTooltip();
           });
         }
-
-        // 4. 駅を配置
-        function drawStation(point, name, cssClass, targetLayer) {
-          var latlng = mcToLatLng(point[0], point[1]);
-          var myIcon = L.divIcon({ className: cssClass, iconAnchor: [13, 13] });
-          L.marker(latlng, { icon: myIcon }).addTo(targetLayer);
-          L.tooltip({
-            permanent: true,
-            direction: 'right',
-            className: 'station-label',
-            offset: [10, 0]
-          })
-            .setContent(name)
-            .setLatLng(latlng)
-            .addTo(targetLayer);
-        }
-
         if (railwayData.stations) {
           railwayData.stations.forEach(s => {
-            drawStation([s.x, s.z], s.name, s.cssClass, railwayLayer);
+            var latlng = mcToLatLng(s.x, s.z);
+            var myIcon = L.divIcon({ className: s.cssClass, iconAnchor: [13, 13] });
+            L.marker(latlng, { icon: myIcon }).addTo(railwayLayer);
+            L.tooltip({ permanent: true, direction: 'right', className: 'station-label', offset: [10, 0] })
+              .setContent(s.name).setLatLng(latlng).addTo(railwayLayer);
           });
         }
-
         railwayLayer.addTo(map);
 
       } catch (e) {
-        console.error("データの読み込みに失敗しました", e);
+        console.error("2Dマップの読み込みに失敗しました", e);
       }
     }
 
-    initializeMap();
+    initialize2DMap();
 
-    // 検索とUIの処理
+    // =============== 3D VIEW LOGIC ===============
+    let scene, camera, renderer, controls;
+
+    async function init3DMap() {
+      const container = document.getElementById('map3d');
+
+      // 1. Setup Three.js
+      scene = new THREE.Scene();
+      
+      const width = window.innerWidth;
+      const height = window.innerHeight * 0.9; // 90vh
+      camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 10000);
+      
+      // Minecraft Z increases south. Let's make X=Right, Z=Down, Y=Up
+      camera.position.set(975, 400, 590 + 300); // 拠点少し南の上空から
+      camera.lookAt(975, 70, 590);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      container.appendChild(renderer.domElement);
+
+      controls = new OrbitControls(camera, renderer.domElement);
+      controls.target.set(975, 70, 590);
+      controls.update();
+
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      scene.add(ambientLight);
+      
+      const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      dirLight.position.set(500, 1000, 200);
+      scene.add(dirLight);
+
+      // Animation loop
+      function animate() {
+        requestAnimationFrame(animate);
+        if(is3DMode) {
+          controls.update();
+          renderer.render(scene, camera);
+        }
+      }
+      animate();
+
+      // Resize event
+      window.addEventListener('resize', () => {
+        if(is3DMode) {
+          const w = window.innerWidth;
+          const h = window.innerHeight * 0.9;
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+          renderer.setSize(w, h);
+        }
+      });
+
+      // 2. Load JSON data
+      const geometry = new THREE.BoxGeometry(1, 1, 1);
+      const material = new THREE.MeshLambertMaterial({ color: 0xffffff });
+      
+      const loadAreas = settingsData?.load_area || [];
+      const areaSet = new Set();
+      
+      loadAreas.forEach(area => {
+        let minAx = Math.floor(area.x_min / 128);
+        let maxAx = Math.floor(area.x_max / 128);
+        let minAz = Math.floor(area.z_min / 128);
+        let maxAz = Math.floor(area.z_max / 128);
+        for(let ax = minAx; ax <= maxAx; ax++) {
+          for(let az = minAz; az <= maxAz; az++) {
+            areaSet.add(`${ax}_${az}`);
+          }
+        }
+      });
+
+      // Fetch all areas concurrently
+      const promises = Array.from(areaSet).map(async (areaKey) => {
+        try {
+          const res = await fetch(`mapData/JSON/${areaKey}.json${VERSION}`);
+          if(!res.ok) return;
+          const data = await res.json();
+          
+          let blockCount = 0;
+          for(let rx=0; rx<128; rx++){
+            for(let rz=0; rz<128; rz++){
+              if(data.colors[rx][rz] !== 0) blockCount++;
+            }
+          }
+          
+          if(blockCount === 0) return;
+
+          const instancedMesh = new THREE.InstancedMesh(geometry, material, blockCount);
+          const matrix = new THREE.Matrix4();
+          const colorObj = new THREE.Color();
+          const position = new THREE.Vector3();
+          const quaternion = new THREE.Quaternion();
+          const scale = new THREE.Vector3(1, 1, 1);
+          
+          const [axStr, azStr] = areaKey.split('_');
+          const ax = parseInt(axStr);
+          const az = parseInt(azStr);
+          
+          let i = 0;
+          for(let rx=0; rx<128; rx++){
+            for(let rz=0; rz<128; rz++){
+              const cId = data.colors[rx][rz];
+              if(cId !== 0) {
+                const globalX = ax * 128 + rx;
+                const globalZ = az * 128 + rz;
+                const globalY = data.y_coords[rx][rz];
+                
+                // Y座標が 150 を超える高空のオブジェクト（浮島や巨大建築の屋根など）は
+                // 下まで伸ばさずに浮遊しているように見せる。
+                // 基準となる厚さは、高空なら5ブロック、それ以外は地面(Y=-64)まで伸ばす。
+                let h;
+                if (globalY > 150) {
+                  h = 5;
+                } else {
+                  h = Math.max(1, globalY - (-64));
+                }
+                
+                // ブロックの底辺を基準に高さを配置
+                position.set(globalX, globalY - (h / 2), globalZ);
+                scale.set(1, h, 1);
+                
+                matrix.compose(position, quaternion, scale);
+                instancedMesh.setMatrixAt(i, matrix);
+                
+                const rgb = mapColorDict[cId] || [255,255,255];
+                colorObj.setRGB(rgb[0]/255, rgb[1]/255, rgb[2]/255);
+                instancedMesh.setColorAt(i, colorObj);
+                
+                i++;
+              }
+            }
+          }
+          scene.add(instancedMesh);
+        } catch(err) {
+          // ignore missing jsons
+        }
+      });
+
+      await Promise.all(promises);
+      
+      const loader = document.getElementById('loading3d');
+      loader.style.display = 'none';
+      is3DInitialized = true;
+    }
+
+
+    // =============== UI CONTROLS ===============
     var railwayVisible = true;
     document.getElementById('toggleRailway').addEventListener('click', function () {
       if (railwayVisible) {
@@ -289,10 +433,44 @@
       railwayVisible = !railwayVisible;
     });
 
+    document.getElementById('toggle3D').addEventListener('click', async function () {
+      is3DMode = !is3DMode;
+      const map2dDiv = document.getElementById('map');
+      const map3dDiv = document.getElementById('map3d');
+      const searchBox = document.getElementById('markerSearch');
+      const railwayBtn = document.getElementById('toggleRailway');
+      
+      if(is3DMode) {
+        map2dDiv.style.display = 'none';
+        searchBox.style.display = 'none';
+        railwayBtn.style.display = 'none';
+        map3dDiv.style.display = 'block';
+        this.textContent = '2Dマップに戻る';
+        
+        if(!is3DInitialized) {
+          const loader = document.getElementById('loading3d');
+          loader.style.display = 'block';
+          // 少し待ってから描画を開始してUIフリーズを回避
+          setTimeout(async () => {
+             await init3DMap();
+          }, 50);
+        } else {
+          window.dispatchEvent(new Event('resize'));
+        }
+      } else {
+        map3dDiv.style.display = 'none';
+        map2dDiv.style.display = 'block';
+        searchBox.style.display = 'block';
+        railwayBtn.style.display = 'block';
+        this.textContent = '3Dマップに切り替え';
+      }
+    });
+
     const input = document.getElementById("markerSearch");
     const results = document.getElementById("searchResults");
 
     input.addEventListener("input", () => {
+      if(is3DMode) return;
       const keyword = input.value.trim();
       results.innerHTML = "";
       if (keyword === "") return;
